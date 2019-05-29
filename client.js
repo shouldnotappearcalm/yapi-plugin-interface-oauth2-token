@@ -1,8 +1,8 @@
-import interfaceOauth from './component/interfaceOuath2.js'
+import interfaceOauth from './component/interfaceOauth2/interfaceOauth2.js'
 
 function hander(routers) {
   routers.interfaceOauth = {
-    name: '接口鉴权',
+    name: '接口自动鉴权',
     component: interfaceOauth
   };
 }

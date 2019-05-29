@@ -1,0 +1,45 @@
+.m-env-panel {
+  // padding-top: 8px;
+  min-height: 4.68rem;
+  margin-top: 0;
+  background-color: #fff;
+}
+
+.project-env{
+  min-height: 4.68rem;
+  .env-icon-style{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .anticon{
+      font-size: 15px;
+    }
+  }
+
+  .menu-item-checked{
+    background-color: #eef7fe;
+    color: #2395f1;
+    font-size: 14px;
+    margin-right: -1px;
+    border-right: 2px solid #2395f1;
+  }
+
+  .first-menu-item{
+    background-color: #eceef1;
+  }
+
+  .env-content{
+    border-left: 1px solid #ccc;
+  }
+
+  .ant-menu-item-disabled{
+    cursor: pointer;
+  }
+
+  .env-name{
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+}
