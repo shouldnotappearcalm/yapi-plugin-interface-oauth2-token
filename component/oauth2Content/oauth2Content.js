@@ -1,256 +1,153 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './index.scss';
-import { Icon, Row, Col, Form, Input, Button, AutoComplete } from 'antd';
+import { formatTime } from 'client/common.js';
+import { Form, Input, Button, AutoComplete, InputNumber, Switch } from 'antd';
 const FormItem = Form.Item;
 import constants from 'client/constants/variable.js';
 
 // layout
 const formItemLayout = {
   labelCol: {
-    lg: { span: 1 },
-    xs: { span: 2 },
-    sm: { span: 3 }
+    lg: { span: 4 },
+    xs: { span: 7 },
+    sm: { span: 7 }
   },
   wrapperCol: {
-    lg: { span: 20 },
-    xs: { span: 18 },
-    sm: { span: 17 }
+    lg: { span: 17 },
+    xs: { span: 16 },
+    sm: { span: 16 }
   },
   className: 'form-item'
 };
 
-const initMap = {
-  header: [
-    {
-      name: '',
-      value: ''
-    }
-  ],
-  cookie: [
-    {
-      name: '',
-      value: ''
-    }
-  ],
-  global: [
-    {
-      name: '',
-      value: ''
-    }
-  ]
-};
-
-class ProjectEnvContent extends Component {
+class OAuth2Content extends Component {
   static propTypes = {
-    projectMsg: PropTypes.object,
+    projectId: PropTypes.number,
+    envMsg: PropTypes.object,
+    oauthData: PropTypes.object,
     form: PropTypes.object,
     onSubmit: PropTypes.func,
     handleEnvInput: PropTypes.func
   };
 
-  initState() {
-    let header = [
-      {
-        name: '',
-        value: ''
-      }
-    ];
-    let cookie = [
-      {
-        name: '',
-        value: ''
-      }
-    ];
-
-    let global = [
-      {
-        name: '',
-        value: ''
-      }
-    ];
-
-    return { header, cookie, global };
-  }
-
   constructor(props) {
     super(props);
-    this.state = Object.assign({}, initMap);
+    this.state = {
+      oauth_data: {}
+    };
   }
-  addHeader = (value, index, name) => {
-    let nextHeader = this.state[name][index + 1];
-    if (nextHeader && typeof nextHeader === 'object') {
-      return;
-    }
-    let newValue = {};
-    let data = { name: '', value: '' };
-    newValue[name] = [].concat(this.state[name], data);
-    this.setState(newValue);
-  };
-
-  delHeader = (key, name) => {
-    let curValue = this.props.form.getFieldValue(name);
-    let newValue = {};
-    newValue[name] = curValue.filter((val, index) => {
-      return index !== key;
-    });
-    this.props.form.setFieldsValue(newValue);
-    this.setState(newValue);
-  };
 
   handleInit(data) {
     this.props.form.resetFields();
-    let newValue = this.initState(data);
-    this.setState({ ...newValue });
+
+    if (data.is_oauth_open == null) {
+      data.is_oauth_open = false;
+    }
+    this.setState({
+      oauth_data: data
+    });
   }
 
   componentWillReceiveProps(nextProps) {
-    let curEnvName = this.props.projectMsg.name;
-    let nextEnvName = nextProps.projectMsg.name;
+    let curEnvName = this.props.envMsg.name;
+    let nextEnvName = nextProps.envMsg.name;
     if (curEnvName !== nextEnvName) {
-      this.handleInit(nextProps.projectMsg);
+      this.handleInit(nextProps.oauthData);
     }
   }
 
   handleOk = e => {
     e.preventDefault();
-    const { form, onSubmit, projectMsg } = this.props;
+    const { form, onSubmit, envMsg } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
-        let header = values.header.filter(val => {
-          return val.name !== '';
-        });
-        let cookie = values.cookie.filter(val => {
-          return val.name !== '';
-        });
-        let global = values.global.filter(val => {
-          return val.name !== '';
-        });
-        if (cookie.length > 0) {
-          header.push({
-            name: 'Cookie',
-            value: cookie.map(item => item.name + '=' + item.value).join(';')
-          });
-        }
-        let assignValue = {};
-        assignValue.env = Object.assign(
-          { _id: projectMsg._id },
-          {
-            name: values.env.name,
-            domain: values.env.protocol + values.env.domain,
-            header: header,
-            global
-          }
-        );
+        let assignValue = this.state.oauth_data;
+        values.oauth_data.env_id = envMsg._id;
+        assignValue = Object.assign(assignValue, values.oauth_data);
         onSubmit(assignValue);
       }
     });
   };
 
+  // 是否开启
+  onChange = v => {
+    let oauth_data = this.state.oauth_data;
+    oauth_data.is_oauth_open = v;
+    this.setState({
+      oauth_data: oauth_data
+    });
+  };
+
   render() {
-    const { projectMsg } = this.props;
+    const { envMsg } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const headerTpl = (item, index) => {
-      const headerLength = this.state.header.length - 1;
-      return (
-        <Row gutter={2} key={index}>
-          <Col span={10}>
-            <FormItem>
-              {getFieldDecorator('header[' + index + '].name', {
-                validateTrigger: ['onChange', 'onBlur'],
-                initialValue: item.name || ''
-              })(
-                <AutoComplete
-                  style={{ width: '200px' }}
-                  allowClear={true}
-                  dataSource={constants.HTTP_REQUEST_HEADER}
-                  placeholder="请输入header名称"
-                  onChange={() => this.addHeader(item, index, 'header')}
-                  filterOption={(inputValue, option) =>
-                    option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                  }
-                />
-              )}
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem>
-              {getFieldDecorator('header[' + index + '].value', {
-                validateTrigger: ['onChange', 'onBlur'],
-                initialValue: item.value || ''
-              })(<Input placeholder="请输入参数内容" style={{ width: '90%', marginRight: 8 }} />)}
-            </FormItem>
-          </Col>
-          <Col span={2} className={index === headerLength ? ' env-last-row' : null}>
-            {/* 新增的项中，只有最后一项没有有删除按钮 */}
-            <Icon
-              className="dynamic-delete-button delete"
-              type="delete"
-              onClick={e => {
-                e.stopPropagation();
-                this.delHeader(index, 'header');
-              }}
-            />
-          </Col>
-        </Row>
-      );
-    };
-
-    const commonTpl = (item, index, name) => {
-      const length = this.state[name].length - 1;
-      return (
-        <Row gutter={2} key={index}>
-          <Col span={10}>
-            <FormItem>
-              {getFieldDecorator(`${name}[${index}].name`, {
-                validateTrigger: ['onChange', 'onBlur'],
-                initialValue: item.name || ''
-              })(
-                <Input
-                  placeholder={`请输入 ${name} Name`}
-                  style={{ width: '200px' }}
-                  onChange={() => this.addHeader(item, index, name)}
-                />
-              )}
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem>
-              {getFieldDecorator(`${name}[${index}].value`, {
-                validateTrigger: ['onChange', 'onBlur'],
-                initialValue: item.value || ''
-              })(<Input placeholder="请输入参数内容" style={{ width: '90%', marginRight: 8 }} />)}
-            </FormItem>
-          </Col>
-          <Col span={2} className={index === length ? ' env-last-row' : null}>
-            {/* 新增的项中，只有最后一项没有有删除按钮 */}
-            <Icon
-              className="dynamic-delete-button delete"
-              type="delete"
-              onClick={e => {
-                e.stopPropagation();
-                this.delHeader(index, name);
-              }}
-            />
-          </Col>
-        </Row>
-      );
-    };
-
     const envTpl = data => {
       return (
         <div>
           <FormItem required={false} label="环境名称"
             {...formItemLayout}>
-            {getFieldDecorator('env.name', {
+            {getFieldDecorator('oauth_data.env_name', {
               validateTrigger: ['onChange', 'onBlur'],
               initialValue: data.name === '新环境' ? '' : data.name || ''
             })(
               <Input
-                onChange={e => this.props.handleEnvInput(e.target.value)}
                 disabled
                 placeholder="请输入环境名称"
                 style={{ marginRight: 8 }}
+              />
+            )}
+          </FormItem>
+          <FormItem label="是否开启自动获取token" {...formItemLayout}>
+            <Switch
+              checked={this.state.oauth_data.is_oauth_open}
+              onChange={this.onChange}
+              checkedChildren="开"
+              unCheckedChildren="关"
+            />
+            {this.state.oauth_data.last_get_time != null ? (<div>上次更新时间:<span className="logtime">{formatTime(this.state.oauth_data.last_get_time)}</span></div>) : null}
+          </FormItem>
+          <FormItem {...formItemLayout} label="获取token的地址">
+            {getFieldDecorator('oauth_data.get_token_url', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入获取token的地址'
+                }
+              ],
+              initialValue: this.state.oauth_data.get_token_url
+            })(<Input />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="token有效小时">
+            {getFieldDecorator('oauth_data.token_valid_hour', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入token有效小时'
+                }
+              ],
+              initialValue: this.state.oauth_data.token_valid_hour
+            })(<InputNumber />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="请求头字段">
+            {getFieldDecorator('oauth_data.token_header', {
+              rules: [
+                {
+                  required: true,
+                  message: '请选择请求头字段'
+                }
+              ],
+              validateTrigger: ['onChange', 'onBlur'],
+              initialValue: this.state.oauth_data.token_header ? this.state.oauth_data.token_header : 'Authorization'
+            })(
+              <AutoComplete
+                style={{ width: '200px' }}
+                allowClear={true}
+                dataSource={constants.HTTP_REQUEST_HEADER}
+                placeholder="请输入header名称"
+                filterOption={(inputValue, option) =>
+                  option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                }
               />
             )}
           </FormItem>
@@ -260,7 +157,7 @@ class ProjectEnvContent extends Component {
 
     return (
       <div>
-        {envTpl(projectMsg)}
+        {envTpl(envMsg)}
         <div className="btnwrap-changeproject">
           <Button
             className="m-btn btn-save"
@@ -276,4 +173,4 @@ class ProjectEnvContent extends Component {
     );
   }
 }
-export default Form.create()(ProjectEnvContent);
+export default Form.create()(OAuth2Content);
