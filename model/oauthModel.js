@@ -53,6 +53,13 @@ class oauthModel extends baseModel {
     })
   }
 
+  delByProjectIdAndEnvId(projectId, envId) {
+    return this.model.remove({
+      project_id: projectId,
+      env_id: envId
+    }) 
+  } 
+
   save(data) {
     data.add_time = yapi.commons.time();
     data.up_time = yapi.commons.time();

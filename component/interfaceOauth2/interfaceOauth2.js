@@ -125,6 +125,7 @@ class ProjectInterfaceOauth extends Component {
   onSubmit = (value) => {
     let assignValue = value;
     assignValue['project_id'] = this.state._id;
+    assignValue['u_id'] = this.props.projectMsg.uid;
     this.onSave(assignValue);
   };
 

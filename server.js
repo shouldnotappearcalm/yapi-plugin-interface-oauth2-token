@@ -1,7 +1,10 @@
 const yapi = require('yapi.js');
-const controller = require('./controller/controller.js')
+const controller = require('./controller/controller.js');
+const syncTokenUtils = require('./utils/syncTokenUtil.js');
 
 module.exports = function () {
+  yapi.getInst(syncTokenUtils);
+
   //保存获取token的任务
   this.bindHook('add_router', function (addRouter) {
     addRouter({

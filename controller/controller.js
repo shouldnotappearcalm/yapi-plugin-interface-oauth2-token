@@ -6,7 +6,8 @@ const syncTokenUtils = require('../utils/syncTokenUtil.js')
 class interfaceOauth2Controller extends baseController {
   constructor(ctx) {
     super(ctx);
-    this.oauthModel = yapi.getInst(oauthModel)
+    this.oauthModel = yapi.getInst(oauthModel);
+    this.syncTokenUtils = yapi.getInst(syncTokenUtils);
   }
 
 
@@ -42,7 +43,7 @@ class interfaceOauth2Controller extends baseController {
       } else {
         this.syncTokenUtils.deleteSyncJob(oauthData);
       }
-      
+
       return (ctx.body = yapi.commons.resReturn(result));
     } catch (e) {
       ctx.body = yapi.commons.resReturn(null, 402, e.message);
