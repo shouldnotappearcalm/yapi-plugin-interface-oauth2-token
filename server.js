@@ -29,6 +29,14 @@ module.exports = function () {
       path: 'oauthInterface/project/all',
       action: 'getAllOauthByProjectId'
     });
+
+    //校验get_token_url
+    addRouter({
+      controller: controller,
+      method: 'post',
+      path: 'oauthInterface/url/valid',
+      action: 'validateTokenUrl'
+    });
   });
 
 };

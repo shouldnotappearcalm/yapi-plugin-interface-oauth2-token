@@ -1,7 +1,8 @@
 const yapi = require('yapi.js');
 const baseController = require('controllers/base.js');
 const oauthModel = require('../model/oauthModel.js');
-const syncTokenUtils = require('../utils/syncTokenUtil.js')
+const syncTokenUtils = require('../utils/syncTokenUtil.js');
+const url = require('url');
 
 class interfaceOauth2Controller extends baseController {
   constructor(ctx) {
@@ -28,11 +29,10 @@ class interfaceOauth2Controller extends baseController {
         return (ctx.body = yapi.commons.resReturn(null, 408, '缺少环境Id'));
       }
 
-      let existOauthData  = await this.oauthModel.getByProjectIdAndEnvId(oauthData.project_id, oauthData.env_id);
+      let existOauthData = await this.oauthModel.getByProjectIdAndEnvId(oauthData.project_id, oauthData.env_id);
       let result;
-      console.log("exist:" + existOauthData)
       if (existOauthData) {
-        result = await this.oauthModel.upById(existOauthData._id ,oauthData);
+        result = await this.oauthModel.upById(existOauthData._id, oauthData);
       } else {
         result = await this.oauthModel.save(oauthData);
       }
@@ -46,7 +46,7 @@ class interfaceOauth2Controller extends baseController {
 
       return (ctx.body = yapi.commons.resReturn(result));
     } catch (e) {
-      ctx.body = yapi.commons.resReturn(null, 402, e.message);
+      return (ctx.body = yapi.commons.resReturn(null, 402, e.message));
     }
   }
 
@@ -77,7 +77,7 @@ class interfaceOauth2Controller extends baseController {
    * @method GET
    * @returns {Object}
    * @example
-   */ 
+   */
   async getAllOauthByProjectId(ctx) {
     let projectId = ctx.query.project_id;
     if (!projectId) {
@@ -86,6 +86,24 @@ class interfaceOauth2Controller extends baseController {
 
     let projectAllOauth = await this.oauthModel.getByProjectId(projectId);
     return (ctx.body = yapi.commons.resReturn(projectAllOauth));
+  }
+
+  /**
+   * 校验获取token的url是否正确
+   * @param {*} ctx 请求上下文
+   */
+  async validateTokenUrl(ctx) {
+    let getTokenUrl = ctx.request.body.get_token_url;
+    getTokenUrl = getTokenUrl.trim().replace("{time}", new Date().getTime());
+    
+    try {
+      let ops = url.parse(getTokenUrl);
+      let result = await yapi.commons.createWebAPIPostRequest(ops);
+
+      ctx.body = yapi.commons.resReturn(result);
+    } catch (e) {
+      ctx.body = yapi.commons.resReturn(null, 402, "token路径错误");
+    }
   }
 
 }

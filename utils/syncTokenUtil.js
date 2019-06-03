@@ -26,8 +26,8 @@ class syncTokenUtils {
     }
 
     async addSyncJob(oauthData) {
-        let cornExpression = "*/{hour} * * *";
-        cornExpression.replace("{hour}", oauthData.token_valid_hour);
+        let cornExpression = "0 0 */{hour} * * *";
+        cornExpression = cornExpression.replace("{hour}", oauthData.token_valid_hour);
         //立即执行一次
         this.refreshOauthToken(oauthData);
         let scheduleItem = schedule.scheduleJob(cornExpression, async () => {
@@ -63,9 +63,14 @@ class syncTokenUtils {
     async refreshOauthToken(oauthData) {
         yapi.commons.log('token更新定时器触发, getTokenUrl:' + oauthData.get_token_url);
         //对定时任务存在的必要性做判断
-        let projectData = await this.preRefresh(oauthData);
-        let projectId = projectData._id;
+        let projectData;
+        try {
+            projectData = await this.preRefresh(oauthData);
+        } catch(e) {
+            return;
+        }
 
+        let projectId = projectData._id;
         let getTokenUrl = oauthData.get_token_url;
         try {
             let result = await this.execGetToken(getTokenUrl);
@@ -75,7 +80,7 @@ class syncTokenUtils {
             //更新到对应的env上
             await this.updateProjectToken(accessToken, oauthData, projectData);
             this.saveSyncLog(0, "更新token成功", "1", projectId);
-            yapi.commons.log('更新token成功' + e.message)
+            yapi.commons.log('更新token成功')
         } catch (e) {
             this.saveSyncLog(-1, "数据格式出错，请检查", "1", projectId);
             yapi.commons.log('获取数据失败' + e.message);
@@ -91,15 +96,30 @@ class syncTokenUtils {
      * @param {*} projectData 
      */
     async updateProjectToken(accessToken, oauthData, projectData) {
-        let envArray = projectData.env;
-        for (let i = 0; i < envArray.length; i++) {
-            if (envArray[i]._id == oauthData.env_id) {
-                envArray[i][oauthData.token_header] = accessToken;
+        for (let i = 0; i < projectData.env.length; i++) {
+            if (projectData.env[i]._id == oauthData.env_id) {
+                let newItem = {
+                    name: oauthData.token_header,
+                    value: accessToken
+                };
+
+                //更新或者插入这个header
+                let updateFlag = false;
+                for (let j = 0, len = projectData.env[i]['header'].length; j < len; j++) {
+                    if (projectData.env[i]['header'][j]['name'] == newItem.name) {
+                        updateFlag = true;
+                        projectData.env[i]['header'][j]['value'] = newItem.value;
+                        break;
+                    }
+                }
+                
+                if (!updateFlag) {
+                    projectData.env[i]['header'].push(newItem);
+                }
+                await this.projectModel.up(projectData._id ,projectData);
                 break;
             }
         }
-
-        this.projectModel.up(projectData._id ,projectData);
     }
 
     /**
@@ -133,14 +153,14 @@ class syncTokenUtils {
         } catch(e) {
             yapi.commons.log('获取项目:' + projectId + '失败');
             await this.deleteSyncJobAndRemoveData(oauthData);
-            return projectData;
+            throw new Error(`获取项目失败`);
         }
 
         //如果项目已经删除
         if (!projectData) {
             yapi.commons.log('项目:' + projectId + '不存在');
             await this.deleteSyncJobAndRemoveData(oauthData);
-            return projectData; 
+            throw new Error(`项目已经不存在`);
         }
 
         //如果环境变量已经删除

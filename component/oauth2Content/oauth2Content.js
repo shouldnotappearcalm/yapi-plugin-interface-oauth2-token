@@ -5,6 +5,7 @@ import { formatTime } from 'client/common.js';
 import { Form, Input, Button, AutoComplete, InputNumber, Switch } from 'antd';
 const FormItem = Form.Item;
 import constants from 'client/constants/variable.js';
+import axios from 'axios';
 
 // layout
 const formItemLayout = {
@@ -79,6 +80,23 @@ class OAuth2Content extends Component {
     });
   };
 
+  validGetTokenUrlValid = async (rule, value, callback) => {
+    if (!this.state.oauth_data.is_oauth_open) {
+      callback();
+      return;
+    }
+
+    try{
+      let res = await axios.post('/api/plugin/oauthInterface/url/valid', {get_token_url: value});
+      if (res.data.errcode == 402) {
+        callback('获取token地址不正确');
+      }
+    } catch(e) {
+      callback('获取token地址不正确');
+    } 
+    callback()
+  }
+
   render() {
     const { envMsg } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -113,21 +131,26 @@ class OAuth2Content extends Component {
                 {
                   required: true,
                   message: '请输入获取token的地址'
+                },
+                {
+                  validator: this.validGetTokenUrlValid
                 }
               ],
+              validateTrigger: 'onBlur',
               initialValue: this.state.oauth_data.get_token_url
             })(<Input />)}
           </FormItem>
-          <FormItem {...formItemLayout} label="token有效小时">
+          <FormItem {...formItemLayout} label="token有效小时(1-23)">
             {getFieldDecorator('oauth_data.token_valid_hour', {
               rules: [
                 {
                   required: true,
-                  message: '请输入token有效小时'
+                  pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                  message: '请输入token有效小时(整数，0-23)'
                 }
               ],
               initialValue: this.state.oauth_data.token_valid_hour
-            })(<InputNumber />)}
+            })(<InputNumber min="1" max="23" />)}
           </FormItem>
           <FormItem {...formItemLayout} label="请求头字段">
             {getFieldDecorator('oauth_data.token_header', {
