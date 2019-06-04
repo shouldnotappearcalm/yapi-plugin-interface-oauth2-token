@@ -1,4 +1,4 @@
-# yapi-plugin-interface-oauth2
+# yapi-plugin-interface-oauth2-token
 
 > 这是一个为了解决yapi的oauth2.0项目接口需要做鉴权操作的插件,觉得可以给star的欢迎star一下，你的star是我前进的动力之一。
 
