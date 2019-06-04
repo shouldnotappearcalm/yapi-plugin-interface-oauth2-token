@@ -15,10 +15,10 @@
 
 ### 安装插件
 
-> 要使用安装插件的yapi，需要先安装ykit（还是yapi-cli来着）
+> 要使用安装插件的yapi，需要先安装ykit
 
 ```shell
-yapi plugin --name yapi-plugin-interface-oauth2
+yapi plugin --name yapi-plugin-interface-oauth2-token
 ```
 
 ### 配置使用
