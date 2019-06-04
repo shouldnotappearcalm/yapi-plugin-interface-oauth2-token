@@ -3,6 +3,7 @@ const baseController = require('controllers/base.js');
 const oauthModel = require('../model/oauthModel.js');
 const syncTokenUtils = require('../utils/syncTokenUtil.js');
 const url = require('url');
+const http = require('http');
 
 class interfaceOauth2Controller extends baseController {
   constructor(ctx) {
@@ -98,7 +99,7 @@ class interfaceOauth2Controller extends baseController {
     
     try {
       let ops = url.parse(getTokenUrl);
-      let result = await yapi.commons.createWebAPIPostRequest(ops);
+      let result = await this.createWebAPIPostRequest(ops);
 
       ctx.body = yapi.commons.resReturn(result);
     } catch (e) {
@@ -106,6 +107,50 @@ class interfaceOauth2Controller extends baseController {
     }
   }
 
+  /**
+   * 创建一个post请求
+   * @param {*} ops 请求参数
+   */
+  async createWebAPIPostRequest(ops) {
+    return new Promise(function(resolve, reject) {
+      let req = '';
+      let http_client = http.request(
+        {
+          host: ops.hostname,
+          port: ops.port,
+          path: ops.path,
+          method: 'POST',
+          json: true,
+          headers: {
+              "content-type": "application/json"
+          },
+          body: JSON.stringify({})
+        },
+        function(res) {
+          res.on('error', function(err) {
+            reject(err);
+          });
+          res.setEncoding('utf8');
+          if (res.statusCode != 200) {
+            reject({message: 'statusCode != 200'});
+          } else {
+            res.on('data', function(chunk) {
+              req += chunk;
+            });
+            res.on('end', function() {
+              resolve(req);
+            });
+          }
+        }
+      );
+      http_client.on('error', (e) => {
+        reject({message: `request error: ${e.message}`});
+      });
+      http_client.end();
+    });
+  }
+
 }
+
 
 module.exports = interfaceOauth2Controller;

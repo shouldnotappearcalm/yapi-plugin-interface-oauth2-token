@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './index.scss';
 import { formatTime } from 'client/common.js';
-import { Form, Input, Button, AutoComplete, InputNumber, Switch } from 'antd';
+import { Form, Input, Button, AutoComplete, InputNumber, Switch, Tooltip, Icon } from 'antd';
 const FormItem = Form.Item;
 import constants from 'client/constants/variable.js';
 import axios from 'axios';
@@ -125,7 +125,13 @@ class OAuth2Content extends Component {
             />
             {this.state.oauth_data.last_get_time != null ? (<div>上次更新时间:<span className="logtime">{formatTime(this.state.oauth_data.last_get_time)}</span></div>) : null}
           </FormItem>
-          <FormItem {...formItemLayout} label="获取token的地址">
+          <FormItem {...formItemLayout} label={
+            <span>获取token的地址&nbsp;
+              <Tooltip title="默认POST请求，取返回结果的access_token字段（路径中可以包含{time}，我会替换为当前时间戳）">
+                <Icon type="question-circle-o" />
+              </Tooltip>
+            </span>
+            }>
             {getFieldDecorator('oauth_data.get_token_url', {
               rules: [
                 {
@@ -152,7 +158,13 @@ class OAuth2Content extends Component {
               initialValue: this.state.oauth_data.token_valid_hour
             })(<InputNumber min="1" max="23" />)}
           </FormItem>
-          <FormItem {...formItemLayout} label="请求头字段">
+          <FormItem {...formItemLayout} label={
+            <span>请求头字段&nbsp;
+              <Tooltip title="将请求到的token附加到哪个Header字段上">
+                <Icon type="question-circle-o" />
+              </Tooltip>
+            </span>
+            }>
             {getFieldDecorator('oauth_data.token_header', {
               rules: [
                 {
