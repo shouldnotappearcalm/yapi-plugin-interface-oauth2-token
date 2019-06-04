@@ -75,7 +75,11 @@ class syncTokenUtils {
         try {
             let result = await this.execGetToken(getTokenUrl);
             //todo 暂时定死为 access_token
-            let accessToken = result['access_token'];
+            let accessToken;
+            if (result['token_type']) {
+                accessToken = result['token_type'] + " "
+            }
+            accessToken += result['access_token'];
 
             //更新到对应的env上
             await this.updateProjectToken(accessToken, oauthData, projectData);
