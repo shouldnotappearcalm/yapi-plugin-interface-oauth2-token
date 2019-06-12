@@ -53,3 +53,6 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 结果如图：
 
 ![2019-06-04_13-53.png](https://i.loli.net/2019/06/04/5cf6077ea6db826842.png)
+
+## 重启服务
+不论你使用什么启动的YApi，你需要重新启动下
