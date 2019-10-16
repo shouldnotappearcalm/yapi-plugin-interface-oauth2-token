@@ -56,3 +56,22 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 ## 重启服务
 不论你使用什么启动的YApi，你需要重新启动下
+
+## 安装失败问题解决
+
+如果遇到安装失败的情况，请先用下面的命令卸载插件
+
+```shell
+yapi unplugin --name yapi-plugin-interface-oauth2-token
+```
+进入 `vendors` 目录，执行如下命令手动安装 `node-sass`
+
+```shell
+npm install node-sass
+```
+
+再重新安装插件
+
+```shell
+yapi plugin --name yapi-plugin-interface-oauth2-token
+```
