@@ -2,8 +2,6 @@ const yapi = require('yapi.js');
 const baseController = require('controllers/base.js');
 const oauthModel = require('../model/oauthModel.js');
 const syncTokenUtils = require('../utils/syncTokenUtil.js');
-const url = require('url');
-const http = require('http');
 
 class interfaceOauth2Controller extends baseController {
   constructor(ctx) {
@@ -11,7 +9,6 @@ class interfaceOauth2Controller extends baseController {
     this.oauthModel = yapi.getInst(oauthModel);
     this.syncTokenUtils = yapi.getInst(syncTokenUtils);
   }
-
 
   /**
    * 保存获取token的相关信息
@@ -30,14 +27,16 @@ class interfaceOauth2Controller extends baseController {
         return (ctx.body = yapi.commons.resReturn(null, 408, '缺少环境Id'));
       }
 
-      let existOauthData = await this.oauthModel.getByProjectIdAndEnvId(oauthData.project_id, oauthData.env_id);
+      let existOauthData = await this.oauthModel.getByProjectIdAndEnvId(
+        oauthData.project_id,
+        oauthData.env_id
+      );
       let result;
       if (existOauthData) {
         result = await this.oauthModel.upById(existOauthData._id, oauthData);
       } else {
         result = await this.oauthModel.save(oauthData);
       }
-
       //操作定时任务
       if (oauthData.is_oauth_open) {
         this.syncTokenUtils.addSyncJob(oauthData);
@@ -94,63 +93,43 @@ class interfaceOauth2Controller extends baseController {
    * @param {*} ctx 请求上下文
    */
   async validateTokenUrl(ctx) {
-    let getTokenUrl = ctx.request.body.get_token_url;
-    getTokenUrl = getTokenUrl.trim().replace("{time}", new Date().getTime());
-    
+    let getTokenUrl = ctx.request.body.url;
+    let type = ctx.request.body.method;
+    let data_json = ctx.request.body.data_json;
+    let params = {};
+    ctx.request.body.params.forEach(item => {
+      if (item.keyName !== '') {
+        params[item.keyName] = item.value;
+      }
+    });
+    let formData = {};
+    ctx.request.body.form_data.forEach(item => {
+      if (item.keyName !== '') {
+        formData[item.keyName] = item.value;
+      }
+    });
+    let dataType = ctx.request.body.dataType;
+    getTokenUrl = getTokenUrl.trim().replace('{time}', new Date().getTime());
+    const axios = require('axios');
     try {
-      let ops = url.parse(getTokenUrl);
-      let result = await this.createWebAPIPostRequest(ops);
-
-      ctx.body = yapi.commons.resReturn(result);
+      let result;
+      if (type === 'GET') {
+        result = await axios.get(getTokenUrl, { params });
+      } else {
+        if (dataType === 'data_json') {
+          result = await axios.post(getTokenUrl, JSON.parse(data_json));
+        } else {
+          result = await axios.post(getTokenUrl, formData);
+        }
+      }
+      if (result.status !== 200) {
+        ctx.body = yapi.commons.resReturn(null, 402, 'token路径错误');
+      } else {
+        ctx.body = yapi.commons.resReturn(result.data);
+      }
     } catch (e) {
-      ctx.body = yapi.commons.resReturn(null, 402, "token路径错误");
+      ctx.body = yapi.commons.resReturn(null, 402, 'token路径错误');
     }
   }
-
-  /**
-   * 创建一个post请求
-   * @param {*} ops 请求参数
-   */
-  async createWebAPIPostRequest(ops) {
-    return new Promise(function(resolve, reject) {
-      let req = '';
-      let http_client = http.request(
-        {
-          host: ops.hostname,
-          port: ops.port,
-          path: ops.path,
-          method: 'POST',
-          json: true,
-          headers: {
-              "content-type": "application/json"
-          },
-          body: JSON.stringify({})
-        },
-        function(res) {
-          res.on('error', function(err) {
-            reject(err);
-          });
-          res.setEncoding('utf8');
-          if (res.statusCode != 200) {
-            reject({message: 'statusCode != 200'});
-          } else {
-            res.on('data', function(chunk) {
-              req += chunk;
-            });
-            res.on('end', function() {
-              resolve(req);
-            });
-          }
-        }
-      );
-      http_client.on('error', (e) => {
-        reject({message: `request error: ${e.message}`});
-      });
-      http_client.end();
-    });
-  }
-
 }
-
-
 module.exports = interfaceOauth2Controller;

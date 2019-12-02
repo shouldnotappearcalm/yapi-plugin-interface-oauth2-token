@@ -5,18 +5,20 @@
   background-color: #fff;
 }
 
-.project-env{
+.project-env {
   min-height: 4.68rem;
-  .env-icon-style{
+
+  .env-icon-style {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .anticon{
+
+    .anticon {
       font-size: 15px;
     }
   }
 
-  .menu-item{
+  .menu-item {
     padding: 0 16px;
     font-size: 13px;
     line-height: 42px;
@@ -27,7 +29,7 @@
 
   }
 
-  .menu-item-checked{
+  .menu-item-checked {
     background-color: #eef7fe;
     color: #2395f1;
     font-size: 14px;
@@ -35,29 +37,31 @@
     border-right: 2px solid #2395f1;
   }
 
-  .first-menu-item{
+  .first-menu-item {
     background-color: #eceef1;
   }
 
-  .delete{
+  .delete {
     font-size: 20px;
     top: 8px;
   }
 
-  .env-content{
+  .env-content {
     border-left: 1px solid #ccc;
   }
 
-  .ant-menu-item-disabled{
+  .ant-menu-item-disabled {
     cursor: pointer;
   }
 
-  .m-empty-prompt{
+  .m-empty-prompt {
     display: flex;
     height: 400px;
-    span{
+
+    span {
       margin: auto;
       font-size: 16px;
+
       .anticon {
         padding-right: 16px;
         font-size: 24px;
@@ -65,8 +69,9 @@
     }
   }
 
-  .env-label{
+  .env-label {
     padding-bottom: 8px;
+
     a {
       color: #636363;
     }
@@ -76,11 +81,12 @@
     display: none;
   }
 
-  .env-name{
+  .env-name {
     width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .btnwrap-changeproject {
     text-align: center;
     padding: .16rem 0;
@@ -88,6 +94,24 @@
     background-color: #fff;
     margin: 0 -.4rem;
     background-size: 4px 4px;
-}
-  
+  }
+
+  .editable-cell {
+    position: relative;
+  }
+
+  .editable-cell-value-wrap {
+    padding: 5px 12px;
+    cursor: pointer;
+  }
+
+  .editable-row:hover .editable-cell-value-wrap {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 4px 11px;
+  }
+
+  .ant-table-tbody tr td {
+    padding: 10px 15px;
+  }
 }
