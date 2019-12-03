@@ -99,13 +99,17 @@ class interfaceOauth2Controller extends baseController {
     let params = {};
     ctx.request.body.params.forEach(item => {
       if (item.keyName !== '') {
-        params[item.keyName] = item.value;
+        params[item.keyName] = item.value
+          .trim()
+          .replace('{time}', new Date().getTime());
       }
     });
     let formData = {};
     ctx.request.body.form_data.forEach(item => {
       if (item.keyName !== '') {
-        formData[item.keyName] = item.value;
+        formData[item.keyName] = item.value
+          .trim()
+          .replace('{time}', new Date().getTime());
       }
     });
     let dataType = ctx.request.body.dataType;
@@ -117,7 +121,10 @@ class interfaceOauth2Controller extends baseController {
         result = await axios.get(getTokenUrl, { params });
       } else {
         if (dataType === 'data_json') {
-          result = await axios.post(getTokenUrl, JSON.parse(data_json));
+          result = await axios.post(
+            getTokenUrl,
+            data_json.trim().replace('{time}', new Date().getTime())
+          );
         } else {
           result = await axios.post(getTokenUrl, formData);
         }

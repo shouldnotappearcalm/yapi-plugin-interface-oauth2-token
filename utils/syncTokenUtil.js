@@ -87,9 +87,7 @@ class syncTokenUtils {
       } else {
         let dataType = oauthData.dataType;
         let formData =
-          dataType === 'data_json'
-            ? JSON.parse(oauthData.data_json)
-            : oauthData.form_data;
+          dataType === 'data_json' ? oauthData.data_json : oauthData.form_data;
         result = await this.execGetToken(
           getTokenUrl,
           method,
@@ -109,7 +107,8 @@ class syncTokenUtils {
           token = token[item];
         });
         accessToken = token;
-      } else {
+      } else if (tokenPathList[0] === 'header') {
+        tokenPathList[0] = 'headers';
         tokenPathList.forEach(item => {
           token = token[item];
         });
@@ -253,7 +252,9 @@ class syncTokenUtils {
       let formData = {};
       data.forEach(item => {
         if (item.keyName !== '') {
-          formData[item.keyName] = item.value;
+          formData[item.keyName] = item.value
+            .trim()
+            .replace('{time}', new Date().getTime());
         }
       });
       if (type === 'GET') {
