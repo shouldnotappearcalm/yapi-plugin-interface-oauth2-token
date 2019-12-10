@@ -60,6 +60,42 @@ class syncTokenUtils {
     }
   }
 
+  getTokenByPath(result, token_path) {
+    let accessToken = '';
+    //将字符串转成数组
+    let paths = token_path.split('+');
+    paths.forEach(path => {
+      let token = result;
+      path = path.trim();
+      let tokenPath = path.replace('[', '.');
+      tokenPath = tokenPath.replace(']', '');
+      let tokenPathList = tokenPath.split('.');
+      if (tokenPathList[0] === 'body') {
+        tokenPathList[0] = 'data';
+        tokenPathList.forEach(item => {
+          token = token[item];
+        });
+        accessToken += token;
+      } else if (tokenPathList[0] === 'header') {
+        tokenPathList[0] = 'headers';
+        tokenPathList.forEach(item => {
+          token = token[item];
+        });
+        token.forEach((item, index) => {
+          if (index === token.length - 1) {
+            accessToken += item.split(';')[0];
+          } else {
+            accessToken += item.split(';')[0] + '; ';
+          }
+        });
+      } else {
+        let tokenPath = path.replace(/'/g, '').replace(/"/g, '');
+        accessToken += tokenPath;
+      }
+    });
+    return accessToken;
+  }
+
   /**
    * 刷新oauth的token值
    * @param {*} oauthData
@@ -96,31 +132,7 @@ class syncTokenUtils {
           dataType
         );
       }
-      //将字符串转成数组
-      let tokenPath = oauthData.token_path.replace('[', '.');
-      tokenPath = tokenPath.replace(']', '');
-      let tokenPathList = tokenPath.split('.');
-      let token = result;
-      let accessToken = '';
-      if (tokenPathList[0] === 'body') {
-        tokenPathList[0] = 'data';
-        tokenPathList.forEach(item => {
-          token = token[item];
-        });
-        accessToken = token;
-      } else if (tokenPathList[0] === 'header') {
-        tokenPathList[0] = 'headers';
-        tokenPathList.forEach(item => {
-          token = token[item];
-        });
-        token.forEach((item, index) => {
-          if (index === token.length - 1) {
-            accessToken += item.split(';')[0];
-          } else {
-            accessToken += item.split(';')[0] + '; ';
-          }
-        });
-      }
+      let accessToken = this.getTokenByPath(result, oauthData.token_path);
       //更新到对应的env上;
       await this.updateProjectToken(accessToken, oauthData, projectData);
       this.saveSyncLog(0, '更新token成功', '1', projectId);
