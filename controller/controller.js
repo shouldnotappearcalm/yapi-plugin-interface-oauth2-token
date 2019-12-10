@@ -121,7 +121,10 @@ class interfaceOauth2Controller extends baseController {
         result = await axios.get(getTokenUrl, { params });
       } else {
         if (dataType === 'data_json') {
-          result = await axios.post(
+          const instance = axios.create({
+            headers: { 'Content-Type': 'application/json' }
+          });
+          result = await instance.post(
             getTokenUrl,
             data_json.trim().replace('{time}', new Date().getTime())
           );
@@ -129,12 +132,15 @@ class interfaceOauth2Controller extends baseController {
           result = await axios.post(getTokenUrl, formData);
         }
       }
+      ctx.body = yapi.commons.resReturn(result.data);
       if (result.status !== 200) {
+        yapi.commons.log('校验地址返回错误状态,' + result);
         ctx.body = yapi.commons.resReturn(null, 402, 'token路径错误');
       } else {
         ctx.body = yapi.commons.resReturn(result.data);
       }
     } catch (e) {
+      yapi.commons.log('校验地址返回错误状态,' + e.message);
       ctx.body = yapi.commons.resReturn(null, 402, 'token路径错误');
     }
   }

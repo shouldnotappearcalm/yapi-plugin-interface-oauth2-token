@@ -117,7 +117,7 @@ class OAuth2Content extends Component {
               addId: 1
             }
           ],
-          data_json: '{\r\b\b"data":[1]\r}',
+          data_json: '',
           form_data: [
             {
               keyName: '',
@@ -199,7 +199,7 @@ class OAuth2Content extends Component {
 
   //修改path类型
   handleChange = value => {
-    this.setState((state, props) => {
+    this.setState(state => {
       return (state.oauth_data.request_type = value);
     });
   };
@@ -210,7 +210,7 @@ class OAuth2Content extends Component {
     if (type === 'GET') {
       const currentData = params.filter(item => item.addId !== id);
       const currentId = params[params.length - 1].addId;
-      this.setState((state, props) => {
+      this.setState(state => {
         return (
           (state.oauth_data.params = currentData),
           (state.paramsAddId = currentId)
@@ -219,7 +219,7 @@ class OAuth2Content extends Component {
     } else {
       const currentData = form_data.filter(item => item.addId !== id);
       const currentId = form_data[form_data.length - 1].addId;
-      this.setState((state, props) => {
+      this.setState(state => {
         return (
           (state.oauth_data.form_data = currentData),
           (state.dataAddId = currentId)
@@ -243,7 +243,6 @@ class OAuth2Content extends Component {
   };
 
   handleSave = row => {
-    console.loc(row);
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];
@@ -255,13 +254,13 @@ class OAuth2Content extends Component {
   };
   //修改内容转成文本
   editValue(type, whoEdit, index) {
-    this.setState((state, props) => {
+    this.setState(state => {
       return (state.oauth_data[type][index].flag[whoEdit] = true);
     });
   }
   //修改完成转回表格
   cancelEdit(type, whoEdit, index) {
-    this.setState((state, props) => {
+    this.setState(state => {
       return (state.oauth_data[type][index].flag[whoEdit] = false);
     });
     this.forceUpdate();
@@ -280,7 +279,7 @@ class OAuth2Content extends Component {
           addId: currentId
         }
       ];
-      this.setState((state, props) => {
+      this.setState(state => {
         return (
           (state.oauth_data.params = currentData),
           (state.paramsAddId = currentId)
@@ -297,7 +296,7 @@ class OAuth2Content extends Component {
           addId: currentId
         }
       ];
-      this.setState((state, props) => {
+      this.setState(state => {
         return (
           (state.oauth_data.form_data = currentData),
           (state.dataAddId = currentId)
@@ -305,27 +304,26 @@ class OAuth2Content extends Component {
       });
     }
     const value = e.target.value;
-    this.setState((state, props) => {
+    this.setState(state => {
       return (state.oauth_data[type][index][whoEdit] = value);
     });
   }
   //更改data的类型
   changeDataType = e => {
     const type = e.target.value;
-    this.setState((state, props) => {
+    this.setState(state => {
       return (state.oauth_data.dataType = type);
     });
   };
   changeJson = e => {
     const value = e.target.value;
-    this.setState((state, props) => {
+    this.setState(state => {
       return (state.oauth_data.data_json = value);
     });
   };
   changeUrl = e => {
     const url = e.target.value;
-    console.log(111);
-    this.setState((state, props) => {
+    this.setState(state => {
       return (state.oauth_data.get_token_url = url);
     });
   };

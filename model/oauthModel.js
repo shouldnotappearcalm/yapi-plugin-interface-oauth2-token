@@ -32,7 +32,7 @@ class oauthModel extends baseModel {
       params: Array,
       //post请求的类型和参数
       dataType: String,
-      data_json: Array,
+      data_json: String,
       form_data: Array,
       //token的获取路径
       token_path: String

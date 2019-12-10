@@ -86,12 +86,13 @@ class syncTokenUtils {
         result = await this.execGetToken(getTokenUrl, method, params);
       } else {
         let dataType = oauthData.dataType;
-        let formData =
-          dataType === 'data_json' ? oauthData.data_json : oauthData.form_data;
+        let formData = oauthData.form_data;
+        let dataJson = oauthData.data_json;
         result = await this.execGetToken(
           getTokenUrl,
           method,
           formData,
+          dataJson,
           dataType
         );
       }
@@ -244,7 +245,7 @@ class syncTokenUtils {
    * 请求获取token值的接口
    * @param {*} getTokenUrl 获取token的路径
    */
-  async execGetToken(getTokenUrl, type, data, dataType) {
+  async execGetToken(getTokenUrl, type, data, dataJson, dataType) {
     getTokenUrl = getTokenUrl.trim().replace('{time}', new Date().getTime());
     const axios = require('axios');
     try {
@@ -266,7 +267,7 @@ class syncTokenUtils {
           const instance = axios.create({
             headers: { 'Content-Type': 'application/json' }
           });
-          response = await instance.post(getTokenUrl, formData);
+          response = await instance.post(getTokenUrl, dataJson);
         } else {
           response = await axios.post(getTokenUrl, formData);
         }
