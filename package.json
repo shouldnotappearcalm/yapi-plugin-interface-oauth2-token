@@ -19,5 +19,12 @@
   "bugs": {
     "url": "https://github.com/shouldnotappearcalm/yapi-plugin-interface-oauth2/issues"
   },
-  "homepage": "https://github.com/shouldnotappearcalm/yapi-plugin-interface-oauth2#readme"
+  "homepage": "https://github.com/shouldnotappearcalm/yapi-plugin-interface-oauth2#readme",
+  "dependencies": {
+    "add": "^2.0.6",
+    "axios": "^0.19.0",
+    "global": "^4.4.0",
+    "yarn": "^1.19.1",
+    "ykit": "^0.8.13"
+  }
 }

@@ -4,6 +4,7 @@ import './index.scss';
 import { Layout, message, Row } from 'antd';
 const { Content, Sider } = Layout;
 import ProjectEnvContent from '../oauth2Content/oauth2Content';
+
 import { connect } from 'react-redux';
 import { updateEnv, getProject, getEnv } from 'client/reducer/modules/project';
 import axios from 'axios';
@@ -83,7 +84,10 @@ class ProjectInterfaceOauth extends Component {
     }
 
     for (let i = 0; i < this.state.projectAllOauth.length; i++) {
-      if (this.state.projectAllOauth[i].env_id && this.state.projectAllOauth[i].env_id == envId) {
+      if (
+        this.state.projectAllOauth[i].env_id &&
+        this.state.projectAllOauth[i].env_id == envId
+      ) {
         currOauth = this.state.projectAllOauth[i];
         break;
       }
@@ -104,25 +108,26 @@ class ProjectInterfaceOauth extends Component {
     }
   }
 
-
   enterItem = key => {
     this.setState({ delIcon: key });
   };
 
   //保存设置
   async onSave(assignValue) {
-    await axios.post('/api/plugin/oauthInterface/save', assignValue).then(res => {
-      if (res.data.errcode === 0) {
-        message.success('保存成功');
-        this.getOauthData();
-      } else {
-        message.error(res.data.errmsg);
-      }
-    });
+    await axios
+      .post('/api/plugin/oauthInterface/save', assignValue)
+      .then(res => {
+        if (res.data.errcode === 0) {
+          message.success('保存成功');
+          this.getOauthData();
+        } else {
+          message.error(res.data.errmsg);
+        }
+      });
   }
 
   //提交保存信息
-  onSubmit = (value) => {
+  onSubmit = value => {
     let assignValue = value;
     assignValue['project_id'] = this.state._id;
     assignValue['u_id'] = this.props.projectMsg.uid;
@@ -143,12 +148,17 @@ class ProjectInterfaceOauth extends Component {
       return (
         <Row
           key={index}
-          className={'menu-item ' + (index === currentKey ? 'menu-item-checked' : '')}
+          className={
+            'menu-item ' + (index === currentKey ? 'menu-item-checked' : '')
+          }
           onClick={() => this.handleClick(index, item)}
           onMouseEnter={() => this.enterItem(index)}
         >
           <span className="env-icon-style">
-            <span className="env-name" style={{ color: item.name === '新环境' && '#2395f1' }}>
+            <span
+              className="env-name"
+              style={{ color: item.name === '新环境' && '#2395f1' }}
+            >
               {item.name}
             </span>
           </span>
@@ -163,16 +173,21 @@ class ProjectInterfaceOauth extends Component {
             <div style={{ height: '100%', borderRight: 0 }}>
               <Row className="first-menu-item menu-item">
                 <div className="env-icon-style">
-                  <h3>
-                    环境列表
-                  </h3>
+                  <h3>环境列表</h3>
                 </div>
               </Row>
               {envSettingItems}
             </div>
           </Sider>
           <Layout className="env-content">
-            <Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
+            <Content
+              style={{
+                background: '#fff',
+                padding: 24,
+                margin: 0,
+                minHeight: 280
+              }}
+            >
               <ProjectEnvContent
                 projectId={this.state._id}
                 envMsg={this.state.currentEnvMsg}
