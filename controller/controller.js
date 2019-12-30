@@ -133,7 +133,7 @@ class interfaceOauth2Controller extends baseController {
         }
       }
       ctx.body = yapi.commons.resReturn(result.data);
-      if (result.status !== 200) {
+      if (result.status >= 300) {
         yapi.commons.log('校验地址返回错误状态,' + result);
         ctx.body = yapi.commons.resReturn(null, 402, 'token路径错误');
       } else {
