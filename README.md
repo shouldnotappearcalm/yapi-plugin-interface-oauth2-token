@@ -18,8 +18,14 @@
 > 要使用安装插件的yapi，需要先安装 `yapi-cli`
 
 ```shell
+npm install yapi-cli -g
+
 yapi plugin --name yapi-plugin-interface-oauth2-token
 ```
+
+### 升级插件
+
+修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.0.0`
 
 ### 配置使用
 
