@@ -52,7 +52,10 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 - 获取token的地址： 获取 token 的地址，可以是 `GET` 请求或者是 `POST` 请求
 - token有效小时： 我会以定时任务的方式重新获取token
 - 请求头字段： 将获取到的结果放入这个环境的哪个Header字段，比如我这里选择了 `Authorization`，将会把获取道德token保存到这个属性里
-- 获取路径： 比如你要获取请求体里面的内容，就是 `data.xxx`，记得以 data 开头获取请求体内容，如果是获取 `header` 的内容请使用 `header.yyy`，可以使用 `+` 作为连接符
+- 获取路径
+  - 比如你要获取请求体里面的内容，就是 `data.xxx`，记得以 `data` 开头获取请求体内容
+  - 如果是获取 `header` 的内容请使用 `header.yyy`，可以使用 `+` 作为连接符
+  - 获取返回结果中的内容请使用 `body.xxx`
 
 ---
 
