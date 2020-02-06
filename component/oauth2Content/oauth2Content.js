@@ -519,26 +519,26 @@ class OAuth2Content extends Component {
                 </Select>
               </Col>
               <Col span={16}>
-                <Input onChange={this.changeUrl} value={get_token_url} />
+                {getFieldDecorator('oauth_data.get_token_url', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入获取token的地址'
+                      },
+                      {
+                        validator: this.validGetTokenUrlValid
+                      }
+                    ],
+                    validateTrigger: ['onBlur'],
+                    initialValue: get_token_url
+                  })(
+                    <Input onChange={this.changeUrl} value={get_token_url} />
+                  )}
               </Col>
               <Col span={2}>
-                {getFieldDecorator('oauth_data.get_token_url', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入获取token的地址'
-                    },
-                    {
-                      validator: this.validGetTokenUrlValid
-                    }
-                  ],
-                  validateTrigger: 'onClick',
-                  initialValue: get_token_url
-                })(
-                  <Button type="primary" style={{ marginLeft: '30px' }}>
-                    检验
-                  </Button>
-                )}
+                <Button onClick={this.validGetTokenUrlValid} type="primary" style={{ marginLeft: '30px' }}>
+                  检验
+                </Button>
               </Col>
             </Row>
           </FormItem>
