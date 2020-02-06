@@ -27,7 +27,7 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 我的升级过程不一定是最好的方法
 
-1. 修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.0.0`
+1. 修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.0.1`
 
 2. 我删除了 `node_modules`，然后使用 `npm install` 重新安装了所有依赖
 
