@@ -18,7 +18,26 @@
 > 要使用安装插件的yapi，需要先安装 `yapi-cli`
 
 ```shell
+npm install yapi-cli -g
+
 yapi plugin --name yapi-plugin-interface-oauth2-token
+```
+
+### 升级插件
+
+我的升级过程不一定是最好的方法
+
+1. 修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.0.0`
+
+2. 我删除了 `node_modules`，然后使用 `npm install` 重新安装了所有依赖
+
+3. 然后先卸载插件，再重新安装插件
+
+```shell
+yapi unplugin --name yapi-plugin-interface-oauth2-token
+
+yapi plugin --name yapi-plugin-interface-oauth2-token
+
 ```
 
 ### 配置使用
@@ -33,7 +52,10 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 - 获取token的地址： 获取 token 的地址，可以是 `GET` 请求或者是 `POST` 请求
 - token有效小时： 我会以定时任务的方式重新获取token
 - 请求头字段： 将获取到的结果放入这个环境的哪个Header字段，比如我这里选择了 `Authorization`，将会把获取道德token保存到这个属性里
-- 获取路径： 比如你要获取请求体里面的内容，就是 `data.xxx`，记得以 data 开头获取请求体内容，如果是获取 `header` 的内容请使用 `header.yyy`，可以使用 `+` 作为连接符
+- 获取路径
+  - 比如你要获取请求体里面的内容，就是 `data.xxx`，记得以 `data` 开头获取请求体内容
+  - 如果是获取 `header` 的内容请使用 `header.yyy`，可以使用 `+` 作为连接符
+  - 获取返回结果中的内容请使用 `body.xxx`
 
 ---
 
