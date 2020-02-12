@@ -87,10 +87,22 @@ class OAuth2Content extends Component {
       let paramsAddId, dataAddId, headersAddId;
       if (headers_data) {
         headersAddId =
-            headers_data.length === 0 ? 1 : headers_data[headers_data.length - 1].addId;
+          headers_data.length === 0 ? 1 : headers_data[headers_data.length - 1].addId;
       } else {
         headersAddId = 1;
       }
+      // 兼容以前的配置
+      if (headers_data && headers_data.length == 0) {
+        data.headers_data = [
+          {
+            keyName: '',
+            value: '',
+            flag: { keyFlag: false, valueFlag: false },
+            addId: 1
+          }
+        ]
+      }
+
       if (request_type === 'GET') {
         paramsAddId = params.length === 0 ? 1 : params[params.length - 1].addId;
       } else {
@@ -139,7 +151,7 @@ class OAuth2Content extends Component {
             {
               keyName: '',
               value: '',
-              flag: {keyFlag: false, valueFlag: false},
+              flag: { keyFlag: false, valueFlag: false },
               addId: 1
             }
           ],
@@ -250,8 +262,8 @@ class OAuth2Content extends Component {
       const currentId = headers_data[form_data.length - 1].addId;
       this.setState(state => {
         return (
-            (state.oauth_data.headers_data = currentData),
-                (state.headersAddId = currentId)
+          (state.oauth_data.headers_data = currentData),
+          (state.headersAddId = currentId)
         );
       });
     }
@@ -338,14 +350,14 @@ class OAuth2Content extends Component {
         {
           keyName: '',
           value: '',
-          flag: {keyFlag: false, valueFlag: false},
+          flag: { keyFlag: false, valueFlag: false },
           addId: currentId
         }
       ];
       this.setState(state => {
         return (
-            (state.oauth_data.headers_data = currentData),
-                (state.headersAddId = currentId)
+          (state.oauth_data.headers_data = currentData),
+          (state.headersAddId = currentId)
         );
       });
     }
@@ -406,13 +418,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('params', 'keyFlag', index)}
             />
           ) : (
-            <div
-              style={{ height: '32px', lineHeight: '32px' }}
-              onClick={() => this.editValue('params', 'keyFlag', index)}
-            >
-              {text}
-            </div>
-          )
+              <div
+                style={{ height: '32px', lineHeight: '32px' }}
+                onClick={() => this.editValue('params', 'keyFlag', index)}
+              >
+                {text}
+              </div>
+            )
       },
       {
         title: 'VALUE',
@@ -428,13 +440,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('params', 'valueFlag', index)}
             />
           ) : (
-            <div
-              style={{ height: '32px', lineHeight: '32px' }}
-              onClick={() => this.editValue('params', 'valueFlag', index)}
-            >
-              {text}
-            </div>
-          )
+              <div
+                style={{ height: '32px', lineHeight: '32px' }}
+                onClick={() => this.editValue('params', 'valueFlag', index)}
+              >
+                {text}
+              </div>
+            )
       },
       {
         title: 'operation',
@@ -466,13 +478,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('form_data', 'keyFlag', index)}
             />
           ) : (
-            <div
-              style={{ height: '32px', lineHeight: '32px' }}
-              onClick={() => this.editValue('form_data', 'keyFlag', index)}
-            >
-              {text}
-            </div>
-          )
+              <div
+                style={{ height: '32px', lineHeight: '32px' }}
+                onClick={() => this.editValue('form_data', 'keyFlag', index)}
+              >
+                {text}
+              </div>
+            )
       },
       {
         title: 'VALUE',
@@ -488,13 +500,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('form_data', 'valueFlag', index)}
             />
           ) : (
-            <div
-              style={{ height: '32px', lineHeight: '32px' }}
-              onClick={() => this.editValue('form_data', 'valueFlag', index)}
-            >
-              {text}
-            </div>
-          )
+              <div
+                style={{ height: '32px', lineHeight: '32px' }}
+                onClick={() => this.editValue('form_data', 'valueFlag', index)}
+              >
+                {text}
+              </div>
+            )
       },
       {
         title: 'operation',
@@ -518,21 +530,21 @@ class OAuth2Content extends Component {
         dataIndex: 'keyName',
         width: '40%',
         render: (text, record, index) =>
-            record.flag.keyFlag ? (
-                <Input
-                    value={text}
-                    onChange={e =>
-                        this.changeData('headers_data', 'keyName', record.addId, index, e)
-                    }
-                    onBlur={() => this.cancelEdit('headers_data', 'keyFlag', index)}
-                />
-            ) : (
-                <div
-                    style={{height: '32px', lineHeight: '32px'}}
-                    onClick={() => this.editValue('headers_data', 'keyFlag', index)}
-                >
-                  {text}
-                </div>
+          record.flag.keyFlag ? (
+            <Input
+              value={text}
+              onChange={e =>
+                this.changeData('headers_data', 'keyName', record.addId, index, e)
+              }
+              onBlur={() => this.cancelEdit('headers_data', 'keyFlag', index)}
+            />
+          ) : (
+              <div
+                style={{ height: '32px', lineHeight: '32px' }}
+                onClick={() => this.editValue('headers_data', 'keyFlag', index)}
+              >
+                {text}
+              </div>
             )
       },
       {
@@ -540,21 +552,21 @@ class OAuth2Content extends Component {
         dataIndex: 'value',
         width: '40%',
         render: (text, record, index) =>
-            record.flag.valueFlag ? (
-                <Input
-                    value={text}
-                    onChange={e =>
-                        this.changeData('headers_data', 'value', record.addId, index, e)
-                    }
-                    onBlur={() => this.cancelEdit('headers_data', 'valueFlag', index)}
-                />
-            ) : (
-                <div
-                    style={{height: '32px', lineHeight: '32px'}}
-                    onClick={() => this.editValue('headers_data', 'valueFlag', index)}
-                >
-                  {text}
-                </div>
+          record.flag.valueFlag ? (
+            <Input
+              value={text}
+              onChange={e =>
+                this.changeData('headers_data', 'value', record.addId, index, e)
+              }
+              onBlur={() => this.cancelEdit('headers_data', 'valueFlag', index)}
+            />
+          ) : (
+              <div
+                style={{ height: '32px', lineHeight: '32px' }}
+                onClick={() => this.editValue('headers_data', 'valueFlag', index)}
+              >
+                {text}
+              </div>
             )
       },
       {
@@ -563,14 +575,14 @@ class OAuth2Content extends Component {
         width: '15%',
         height: '65px',
         render: (text, record) =>
-            form_data.length >= 1 ? (
-                <Popconfirm
-                    title="Sure to delete?"
-                    onConfirm={() => this.handleDelete('headers_data', record.addId)}
-                >
-                  <a>Delete</a>
-                </Popconfirm>
-            ) : null
+          form_data.length >= 1 ? (
+            <Popconfirm
+              title="Sure to delete?"
+              onConfirm={() => this.handleDelete('headers_data', record.addId)}
+            >
+              <a>Delete</a>
+            </Popconfirm>
+          ) : null
       }
     ];
     const envTpl = data => {
@@ -627,38 +639,38 @@ class OAuth2Content extends Component {
                 </Select>
               </Col>
               <Col span={16}>
-                {getFieldDecorator('oauth_data.get_token_url', {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请输入获取token的地址'
-                      },
-                      {
-                        validator: this.validGetTokenUrlValid
-                      }
-                    ],
-                    validateTrigger: ['onBlur'],
-                    initialValue: get_token_url
-                  })(
-                    <Input onChange={this.changeUrl} value={get_token_url} />
-                  )}
+                <Input onChange={this.changeUrl} value={get_token_url} />
               </Col>
               <Col span={2}>
-                <Button onClick={this.validGetTokenUrlValid} type="primary" style={{ marginLeft: '30px' }}>
-                  检验
-                </Button>
+                {getFieldDecorator('oauth_data.get_token_url', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入获取token的地址'
+                    },
+                    {
+                      validator: this.validGetTokenUrlValid
+                    }
+                  ],
+                  validateTrigger: 'onClick',
+                  initialValue: get_token_url
+                })(
+                  <Button type="primary" style={{ marginLeft: '30px' }}>
+                    检验
+                  </Button>
+                )}
               </Col>
             </Row>
           </FormItem>
           <FormItem {...formItemLayout} label="headers">
-              <Table
-                  rowClassName={() => 'editable-row'}
-                  bordered
-                  dataSource={headers_data}
-                  columns={headerColumns}
-                  rowKey="addId"
-              />
-            </FormItem>
+            <Table
+              rowClassName={() => 'editable-row'}
+              bordered
+              dataSource={headers_data}
+              columns={headerColumns}
+              rowKey="addId"
+            />
+          </FormItem>
           <FormItem {...formItemLayout} label="data">
             <Tabs defaultActiveKey="1" onChange={this.callback}>
               <TabPane tab="Params" key="1">
@@ -684,14 +696,14 @@ class OAuth2Content extends Component {
                     style={{ height: '150px' }}
                   />
                 ) : (
-                  <Table
-                    rowClassName={() => 'editable-row'}
-                    bordered
-                    dataSource={form_data}
-                    columns={postColumns}
-                    rowKey="addId"
-                  />
-                )}
+                    <Table
+                      rowClassName={() => 'editable-row'}
+                      bordered
+                      dataSource={form_data}
+                      columns={postColumns}
+                      rowKey="addId"
+                    />
+                  )}
               </TabPane>
             </Tabs>
           </FormItem>
@@ -705,7 +717,7 @@ class OAuth2Content extends Component {
                 }
               ],
               initialValue: token_valid_hour
-            })(<InputNumber min="1" max="23" />)}
+            })(<InputNumber min={1} max={23} />)}
           </FormItem>
           <FormItem
             {...formItemLayout}

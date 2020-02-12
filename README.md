@@ -27,7 +27,7 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 我的升级过程不一定是最好的方法
 
-1. 修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.0.1`
+1. 修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.2.0`
 
 2. 我删除了 `node_modules`，然后使用 `npm install` 重新安装了所有依赖
 
@@ -78,6 +78,7 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 ![2019-06-04_13-53.png](https://i.loli.net/2019/06/04/5cf6077ea6db826842.png)
 
 ## 重启服务
+
 不论你使用什么启动的YApi，你需要重新启动下
 
 ## 安装失败问题解决
@@ -87,6 +88,7 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 ```shell
 yapi unplugin --name yapi-plugin-interface-oauth2-token
 ```
+
 进入 `vendors` 目录，执行如下命令手动安装 `node-sass`
 
 ```shell
@@ -101,4 +103,5 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 ## 感谢
 
-最后特别感谢 [`eyotang`](https://github.com/eyotang) 老哥的 [`PR`](https://github.com/shouldnotappearcalm/yapi-plugin-interface-oauth2-token/pull/7)
+- [`eyotang`](https://github.com/eyotang)
+- [`Wizard`](https://github.com/lsw1991abc)
