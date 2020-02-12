@@ -115,11 +115,12 @@ class syncTokenUtils {
     let projectId = projectData._id;
     let getTokenUrl = oauthData.get_token_url;
     let method = oauthData.request_type;
+    let headers_data = oauthData.headers_data;
     let result;
     try {
       if (method === 'GET') {
         let params = oauthData.params;
-        result = await this.execGetToken(getTokenUrl, method, params);
+        result = await this.execGetToken(getTokenUrl, method, headers_data, params);
       } else {
         let dataType = oauthData.dataType;
         let formData = oauthData.form_data;
@@ -127,6 +128,7 @@ class syncTokenUtils {
         result = await this.execGetToken(
           getTokenUrl,
           method,
+          headers_data,
           formData,
           dataJson,
           dataType
@@ -257,31 +259,48 @@ class syncTokenUtils {
    * 请求获取token值的接口
    * @param {*} getTokenUrl 获取token的路径
    */
-  async execGetToken(getTokenUrl, type, data, dataJson, dataType) {
+  async execGetToken(getTokenUrl, type, headers_data, data, dataJson, dataType) {
     getTokenUrl = getTokenUrl.trim().replace('{time}', new Date().getTime());
     const axios = require('axios');
     try {
       let response;
-      let formData = {};
-      data.forEach(item => {
+      let headersData = {};
+      headers_data.forEach(item => {
         if (item.keyName !== '') {
-          formData[item.keyName] = item.value
-            .trim()
-            .replace('{time}', new Date().getTime());
+          headersData[item.keyName] = item.value.trim().replace('{time}', new Date().getTime());
         }
       });
+      // 以支持压缩的response
+      headersData['Accept-Encoding'] = 'gzip, deflate';
       if (type === 'GET') {
+        let params = {};
+        data.forEach(item => {
+          if (item.keyName !== '') {
+            params[item.keyName] = item.value
+                .trim()
+                .replace('{time}', new Date().getTime());
+          }
+        });
         response = await axios.get(getTokenUrl, {
-          params: formData
+          params: params,
+          headers: headersData
         });
       } else {
         if (dataType === 'data_json') {
+          headersData['Content-Type'] = 'application/json';
           const instance = axios.create({
-            headers: { 'Content-Type': 'application/json' }
+            headers: headersData
           });
           response = await instance.post(getTokenUrl, dataJson);
         } else {
-          response = await axios.post(getTokenUrl, formData);
+          let formData = [];
+          data.forEach(item => {
+            if (item.keyName !== '') {
+              formData.push(item.keyName + "=" + item.value.trim().replace('{time}', new Date().getTime()));
+            }
+          });
+          headersData['Content-Type'] = 'application/x-www-form-urlencoded';
+          response = await axios.post(getTokenUrl, formData.join('&'), {headers: headersData});
         }
       }
       if (response.status > 400) {

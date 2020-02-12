@@ -104,36 +104,47 @@ class interfaceOauth2Controller extends baseController {
           .replace('{time}', new Date().getTime());
       }
     });
-    let formData = {};
+    // form-data 使用k1=v1&k2=v2方式提交
+    let formData = [];
     ctx.request.body.form_data.forEach(item => {
       if (item.keyName !== '') {
-        formData[item.keyName] = item.value
-          .trim()
-          .replace('{time}', new Date().getTime());
+        formData.push(
+            item.keyName + "=" + item.value.trim().replace('{time}', new Date().getTime())
+        );
       }
     });
+    let headersData = {};
+    ctx.request.body.headers_data.forEach(item => {
+      if (item.keyName !== '') {
+        headersData[item.keyName] = item.value.trim().replace('{time}', new Date().getTime());
+      }
+    });
+    // 以支持压缩的response
+    headersData['Accept-Encoding'] = 'gzip, deflate';
     let dataType = ctx.request.body.dataType;
     getTokenUrl = getTokenUrl.trim().replace('{time}', new Date().getTime());
     const axios = require('axios');
     try {
       let result;
       if (type === 'GET') {
-        result = await axios.get(getTokenUrl, { params });
+        result = await axios.get(getTokenUrl, { params: params, headers: headersData });
       } else {
         if (dataType === 'data_json') {
+          headersData['Content-Type'] = 'application/json';
           const instance = axios.create({
-            headers: { 'Content-Type': 'application/json' }
+            headers: headersData
           });
           result = await instance.post(
             getTokenUrl,
             data_json.trim().replace('{time}', new Date().getTime())
           );
         } else {
-          result = await axios.post(getTokenUrl, formData);
+          headersData['Content-Type'] = 'application/x-www-form-urlencoded';
+          result = await axios.post(getTokenUrl, formData.join('&'), {headers: headersData});
         }
       }
       ctx.body = yapi.commons.resReturn(result.data);
-      if (result.status !== 200) {
+      if (result.status >= 300) {
         yapi.commons.log('校验地址返回错误状态,' + result);
         ctx.body = yapi.commons.resReturn(null, 402, 'token路径错误');
       } else {

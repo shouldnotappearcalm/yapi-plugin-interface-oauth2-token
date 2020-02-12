@@ -35,7 +35,9 @@ class oauthModel extends baseModel {
       data_json: String,
       form_data: Array,
       //token的获取路径
-      token_path: String
+      token_path: String,
+      // 请求header配置
+      headers_data: Array
     };
   }
 
@@ -45,7 +47,7 @@ class oauthModel extends baseModel {
         project_id: id
       })
       .select(
-        '_id uid project_id add_time up_time is_oauth_open get_token_url token_valid_hour token_header env_id env_name last_get_time request_type params dataType data_json form_data token_path'
+        '_id uid project_id add_time up_time is_oauth_open get_token_url token_valid_hour token_header env_id env_name last_get_time request_type params dataType data_json form_data token_path headers_data'
       )
       .sort({ _id: -1 })
       .exec();
@@ -82,7 +84,7 @@ class oauthModel extends baseModel {
     return this.model
       .find({})
       .select(
-        '_id uid project_id add_time up_time is_oauth_open get_token_url token_valid_hour token_header env_id env_name last_get_time request_type params dataType data_json form_data token_path'
+        '_id uid project_id add_time up_time is_oauth_open get_token_url token_valid_hour token_header env_id env_name last_get_time request_type params dataType data_json form_data token_path headers_data'
       )
       .sort({ _id: -1 })
       .exec();
