@@ -10,6 +10,22 @@
 
 - 简单易用
 - 支持自动定时给所有接口加上一个特定的 `Header` 属性
+- 支持多种请求方式和结果获取方式
+
+## 版本说明
+
+### 1.1.0
+
+- 新增支持自定义请求 `Header`
+
+### 1.0.1
+
+- 解决插件的一些 `bug`
+
+### 1.0.0
+
+- 发布正式版本，支持 `GET`、`POST` 等多种方式请求
+- 支持定制化结果获取方式
 
 ## 简单使用
 
@@ -27,7 +43,7 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 我的升级过程不一定是最好的方法
 
-1. 修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.2.0`
+1. 修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.1.0`
 
 2. 我删除了 `node_modules`，然后使用 `npm install` 重新安装了所有依赖
 
