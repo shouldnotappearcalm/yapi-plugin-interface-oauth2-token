@@ -14,7 +14,7 @@
 
 ## 版本说明
 
-### 1.1.0
+### 1.1.0(2020-2-18)
 
 - 新增支持自定义请求 `Header`
 
@@ -77,7 +77,7 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 关于token请求地址的结果获取：
 
-目前我考虑到的场景如下，我会把 token_type 和 access_token 合并起来，所以我会写获取路径是 `data.token_type +  " " + data.access_token`,
+目前我考虑到的场景如下，我会把接口返回数据中的 `token_type` 和 `access_token` 以空格分隔连接起来，所以我会写获取路径是 `body.token_type +  " " + body.access_token`,
 
 ```json
 {
