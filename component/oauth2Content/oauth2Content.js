@@ -17,7 +17,8 @@ import {
   Tabs,
   Table,
   Popconfirm,
-  Radio
+  Radio,
+  message
 } from 'antd';
 const FormItem = Form.Item;
 import constants from 'client/constants/variable.js';
@@ -181,6 +182,8 @@ class OAuth2Content extends Component {
         let assignValue = this.state.oauth_data;
         values.oauth_data.env_id = envMsg._id;
         assignValue = Object.assign(assignValue, values.oauth_data);
+        // 因为路径 url 没有在FormItem 中，所以设置为 state 中的值
+        assignValue.get_token_url = this.state.oauth_data.get_token_url;
         onSubmit(assignValue);
       }
     });
@@ -220,6 +223,9 @@ class OAuth2Content extends Component {
         form_data,
         data_json
       });
+      if (res.data.errcode == 0) {
+        message.success('路径校验成功');
+      }
       if (res.data.errcode == 402) {
         callback('获取token地址不正确');
       }
@@ -638,7 +644,7 @@ class OAuth2Content extends Component {
                   <Option value="POST">POST</Option>
                 </Select>
               </Col>
-              <Col span={16}>
+              <Col span={18}>
                 <Input onChange={this.changeUrl} value={get_token_url} />
               </Col>
               <Col span={2}>
@@ -719,19 +725,21 @@ class OAuth2Content extends Component {
               initialValue: token_valid_hour
             })(<InputNumber min={1} max={23} />)}
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={
-              <span>
-                请求头字段&nbsp;
-                <Tooltip title="将请求到的token附加到哪个Header字段上">
-                  <Icon type="question-circle-o" />
-                </Tooltip>
-              </span>
-            }
-          >
-            <Row>
-              <Col span={10}>
+
+          <Row>
+            <Col span={3}></Col>
+            <Col span={9}>
+              <FormItem
+                {...formItemLayout}
+                label={
+                  <span>
+                    请求头字段&nbsp;
+                    <Tooltip title="将请求到的token附加到哪个Header字段上">
+                      <Icon type="question-circle-o" />
+                    </Tooltip>
+                  </span>
+                }
+              >
                 {getFieldDecorator('oauth_data.token_header', {
                   rules: [
                     {
@@ -754,22 +762,23 @@ class OAuth2Content extends Component {
                     }
                   />
                 )}
-              </Col>
-              <Col span={14}>
-                <FormItem {...formItemLayout} label="获取路径">
-                  {getFieldDecorator('oauth_data.token_path', {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请输入token的获取路径'
-                      }
-                    ],
-                    initialValue: token_path
-                  })(<Input />)}
-                </FormItem>
-              </Col>
-            </Row>
-          </FormItem>
+
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemLayout} label="获取路径">
+                {getFieldDecorator('oauth_data.token_path', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入token的获取路径'
+                    }
+                  ],
+                  initialValue: token_path
+                })(<Input />)}
+              </FormItem>
+            </Col>
+          </Row>
         </div>
       );
     };
