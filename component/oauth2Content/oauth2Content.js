@@ -245,7 +245,7 @@ class OAuth2Content extends Component {
   //删除
   handleDelete = (type, id) => {
     const { params, form_data, headers_data } = this.state.oauth_data;
-    if (type === 'GET') {
+    if (type === 'params') {
       const currentData = params.filter(item => item.addId !== id);
       const currentId = params[params.length - 1].addId;
       this.setState(state => {
@@ -265,7 +265,7 @@ class OAuth2Content extends Component {
       });
     } else if (type === 'headers_data') {
       const currentData = headers_data.filter(item => item.addId !== id);
-      const currentId = headers_data[form_data.length - 1].addId;
+      const currentId = headers_data[headers_data.length - 1].addId;
       this.setState(state => {
         return (
           (state.oauth_data.headers_data = currentData),
