@@ -14,6 +14,8 @@ class oauthModel extends baseModel {
       is_oauth_open: { type: Boolean, default: false },
       //获取token的url路径
       get_token_url: String,
+      // token 有效时长单位
+      token_valid_unit: String,
       //token有效的小时
       token_valid_hour: Number,
       //环境变量的id
@@ -47,7 +49,7 @@ class oauthModel extends baseModel {
         project_id: id
       })
       .select(
-        '_id uid project_id add_time up_time is_oauth_open get_token_url token_valid_hour token_header env_id env_name last_get_time request_type params dataType data_json form_data token_path headers_data'
+        '_id uid project_id add_time up_time is_oauth_open get_token_url token_valid_unit token_valid_hour token_header env_id env_name last_get_time request_type params dataType data_json form_data token_path headers_data'
       )
       .sort({ _id: -1 })
       .exec();
@@ -84,7 +86,7 @@ class oauthModel extends baseModel {
     return this.model
       .find({})
       .select(
-        '_id uid project_id add_time up_time is_oauth_open get_token_url token_valid_hour token_header env_id env_name last_get_time request_type params dataType data_json form_data token_path headers_data'
+        '_id uid project_id add_time up_time is_oauth_open get_token_url token_valid_unit token_valid_hour token_header env_id env_name last_get_time request_type params dataType data_json form_data token_path headers_data'
       )
       .sort({ _id: -1 })
       .exec();

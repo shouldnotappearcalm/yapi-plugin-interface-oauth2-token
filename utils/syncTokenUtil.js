@@ -27,9 +27,16 @@ class syncTokenUtils {
   }
 
   async addSyncJob(oauthData) {
-    let cornExpression = '0 0 */{hour} * * *';
+    let hourExpr = '0 0 */{parameter} * * *';
+    let minExpr = '*/{parameter} * * * *'
+
+    let cornExpression = minExpr;
+    if (!oauthData.token_valid_unit || oauthData.token_valid_unit == 'hour') {
+      cornExpression = hourExpr;
+    }
+    
     cornExpression = cornExpression.replace(
-      '{hour}',
+      '{parameter}',
       oauthData.token_valid_hour
     );
     //立即执行一次

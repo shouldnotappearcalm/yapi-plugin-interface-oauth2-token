@@ -77,6 +77,7 @@ class OAuth2Content extends Component {
       project_id,
       token_header,
       token_valid_hour,
+      token_valid_unit,
       up_time,
       _id,
       request_type,
@@ -127,6 +128,7 @@ class OAuth2Content extends Component {
           project_id,
           token_header,
           token_valid_hour,
+          token_valid_unit: 'hour',
           up_time,
           _id,
           last_get_time: null,
@@ -391,6 +393,11 @@ class OAuth2Content extends Component {
       return (state.oauth_data.get_token_url = url);
     });
   };
+  handleValidUnitChange = value => {
+    this.setState(state => {
+      return (state.oauth_data.token_valid_unit = value);
+    });
+  };
   render() {
     const { envMsg } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -405,6 +412,7 @@ class OAuth2Content extends Component {
       data_json,
       form_data,
       token_valid_hour,
+      token_valid_unit,
       token_header,
       token_path,
       headers_data
@@ -713,17 +721,27 @@ class OAuth2Content extends Component {
               </TabPane>
             </Tabs>
           </FormItem>
-          <FormItem {...formItemLayout} label="token有效小时(1-23)">
-            {getFieldDecorator('oauth_data.token_valid_hour', {
-              rules: [
-                {
-                  required: true,
-                  pattern: new RegExp(/^[1-9]\d*$/, 'g'),
-                  message: '请输入token有效小时(整数，0-23)'
-                }
-              ],
-              initialValue: token_valid_hour
-            })(<InputNumber min={1} max={23} />)}
+          <FormItem {...formItemLayout} label="token有效时长">
+            <Row>
+              <Col span={3}>
+                <Select style={{ width: '100%' }} value={token_valid_unit} onChange={this.handleValidUnitChange}>
+                  <Option value="hour">小时</Option>
+                  <Option value="minute">分钟</Option>
+                </Select>
+              </Col>
+              <Col span={4}>
+                  {getFieldDecorator('oauth_data.token_valid_hour', {
+                    rules: [
+                      {
+                        required: true,
+                        pattern: new RegExp(/^[1-9]\d*$/, 'g'),
+                        message: '请输入token有效小时(整数，0-23)'
+                      }
+                    ],
+                    initialValue: token_valid_hour
+                  })(<InputNumber placeholder="时间单位对应的值" style={{ width: '100%' }} min={1} max={23} />)}
+              </Col>
+            </Row>
           </FormItem>
 
           <Row>
