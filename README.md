@@ -14,7 +14,12 @@
 
 ## 版本说明
 
+### 1.2.0(2020-3-7)
+
+- 支持配置更细粒度的鉴权请求执行时间，支持分钟级
+
 ### 1.1.1(2020-2-25)
+
 - 修改校验成功无明显提示问题
 - 修改 `get_token_url` 提交时候的 `bug`
 
@@ -47,11 +52,9 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 我的升级过程不一定是最好的方法
 
-1. 修改 `package.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.1.1`
+1. 修改 `package.json` 和 `package-lock.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.2.0`
 
-2. 我删除了 `node_modules`，然后使用 `npm install` 重新安装了所有依赖
-
-3. 然后先卸载插件，再重新安装插件
+2. 然后先卸载插件，再重新安装插件
 
 ```shell
 yapi unplugin --name yapi-plugin-interface-oauth2-token
@@ -115,7 +118,7 @@ yapi unplugin --name yapi-plugin-interface-oauth2-token
 npm install node-sass
 ```
 
-再重新安装插件
+修改 `package.json` 和 `package-lock.json` 的版本号，再重新安装插件
 
 ```shell
 yapi plugin --name yapi-plugin-interface-oauth2-token
