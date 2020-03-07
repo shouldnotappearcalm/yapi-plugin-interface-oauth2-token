@@ -735,11 +735,11 @@ class OAuth2Content extends Component {
                       {
                         required: true,
                         pattern: new RegExp(/^[1-9]\d*$/, 'g'),
-                        message: '请输入token有效小时(整数，0-23)'
+                        message: '请输入token有效时长(整数)'
                       }
                     ],
                     initialValue: token_valid_hour
-                  })(<InputNumber placeholder="时间单位对应的值" style={{ width: '100%' }} min={1} max={23} />)}
+                  })(<InputNumber placeholder="时间单位对应的值" style={{ width: '100%' }} min={1} max={60} />)}
               </Col>
             </Row>
           </FormItem>
