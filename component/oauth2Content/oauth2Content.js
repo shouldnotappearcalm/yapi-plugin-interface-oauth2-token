@@ -68,6 +68,9 @@ class OAuth2Content extends Component {
     if (data.is_oauth_open == null) {
       data.is_oauth_open = false;
     }
+    if (!data.token_valid_unit) {
+      data.token_valid_unit = 'hour';
+    }
     let {
       add_time,
       env_id,
@@ -77,7 +80,6 @@ class OAuth2Content extends Component {
       project_id,
       token_header,
       token_valid_hour,
-      token_valid_unit,
       up_time,
       _id,
       request_type,
@@ -432,13 +434,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('params', 'keyFlag', index)}
             />
           ) : (
-              <div
-                style={{ height: '32px', lineHeight: '32px' }}
-                onClick={() => this.editValue('params', 'keyFlag', index)}
-              >
-                {text}
-              </div>
-            )
+            <div
+              style={{ height: '32px', lineHeight: '32px' }}
+              onClick={() => this.editValue('params', 'keyFlag', index)}
+            >
+              {text}
+            </div>
+          )
       },
       {
         title: 'VALUE',
@@ -454,13 +456,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('params', 'valueFlag', index)}
             />
           ) : (
-              <div
-                style={{ height: '32px', lineHeight: '32px' }}
-                onClick={() => this.editValue('params', 'valueFlag', index)}
-              >
-                {text}
-              </div>
-            )
+            <div
+              style={{ height: '32px', lineHeight: '32px' }}
+              onClick={() => this.editValue('params', 'valueFlag', index)}
+            >
+              {text}
+            </div>
+          )
       },
       {
         title: 'operation',
@@ -492,13 +494,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('form_data', 'keyFlag', index)}
             />
           ) : (
-              <div
-                style={{ height: '32px', lineHeight: '32px' }}
-                onClick={() => this.editValue('form_data', 'keyFlag', index)}
-              >
-                {text}
-              </div>
-            )
+            <div
+              style={{ height: '32px', lineHeight: '32px' }}
+              onClick={() => this.editValue('form_data', 'keyFlag', index)}
+            >
+              {text}
+            </div>
+          )
       },
       {
         title: 'VALUE',
@@ -514,13 +516,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('form_data', 'valueFlag', index)}
             />
           ) : (
-              <div
-                style={{ height: '32px', lineHeight: '32px' }}
-                onClick={() => this.editValue('form_data', 'valueFlag', index)}
-              >
-                {text}
-              </div>
-            )
+            <div
+              style={{ height: '32px', lineHeight: '32px' }}
+              onClick={() => this.editValue('form_data', 'valueFlag', index)}
+            >
+              {text}
+            </div>
+          )
       },
       {
         title: 'operation',
@@ -553,13 +555,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('headers_data', 'keyFlag', index)}
             />
           ) : (
-              <div
-                style={{ height: '32px', lineHeight: '32px' }}
-                onClick={() => this.editValue('headers_data', 'keyFlag', index)}
-              >
-                {text}
-              </div>
-            )
+            <div
+              style={{ height: '32px', lineHeight: '32px' }}
+              onClick={() => this.editValue('headers_data', 'keyFlag', index)}
+            >
+              {text}
+            </div>
+          )
       },
       {
         title: 'VALUE',
@@ -575,13 +577,13 @@ class OAuth2Content extends Component {
               onBlur={() => this.cancelEdit('headers_data', 'valueFlag', index)}
             />
           ) : (
-              <div
-                style={{ height: '32px', lineHeight: '32px' }}
-                onClick={() => this.editValue('headers_data', 'valueFlag', index)}
-              >
-                {text}
-              </div>
-            )
+            <div
+              style={{ height: '32px', lineHeight: '32px' }}
+              onClick={() => this.editValue('headers_data', 'valueFlag', index)}
+            >
+              {text}
+            </div>
+          )
       },
       {
         title: 'operation',
@@ -710,14 +712,14 @@ class OAuth2Content extends Component {
                     style={{ height: '150px' }}
                   />
                 ) : (
-                    <Table
-                      rowClassName={() => 'editable-row'}
-                      bordered
-                      dataSource={form_data}
-                      columns={postColumns}
-                      rowKey="addId"
-                    />
-                  )}
+                  <Table
+                    rowClassName={() => 'editable-row'}
+                    bordered
+                    dataSource={form_data}
+                    columns={postColumns}
+                    rowKey="addId"
+                  />
+                )}
               </TabPane>
             </Tabs>
           </FormItem>
@@ -730,16 +732,16 @@ class OAuth2Content extends Component {
                 </Select>
               </Col>
               <Col span={4}>
-                  {getFieldDecorator('oauth_data.token_valid_hour', {
-                    rules: [
-                      {
-                        required: true,
-                        pattern: new RegExp(/^[1-9]\d*$/, 'g'),
-                        message: '请输入token有效时长(整数)'
-                      }
-                    ],
-                    initialValue: token_valid_hour
-                  })(<InputNumber placeholder="时间单位对应的值" style={{ width: '100%' }} min={1} max={60} />)}
+                {getFieldDecorator('oauth_data.token_valid_hour', {
+                  rules: [
+                    {
+                      required: true,
+                      pattern: new RegExp(/^[1-9]\d*$/, 'g'),
+                      message: '请输入token有效时长(整数)'
+                    }
+                  ],
+                  initialValue: token_valid_hour
+                })(<InputNumber placeholder="时间单位对应的值" style={{ width: '100%' }} min={1} max={oauth_data.token_valid_unit == 'hour' ? 23 : 59} />)}
               </Col>
             </Row>
           </FormItem>

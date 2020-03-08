@@ -14,9 +14,13 @@
 
 ## 版本说明
 
+### 1.2.2(2020-3-8)
+
+- 完善鉴权页面的配置，解决时长校验规则问题
+
 ### 1.2.0(2020-3-7)
 
-- 支持配置更细粒度的鉴权请求执行时间，支持分钟级
+- 支持配置更细粒度的鉴权请求执行时间，支持分钟级令牌刷新
 
 ### 1.1.1(2020-2-25)
 
@@ -52,11 +56,14 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 我的升级过程不一定是最好的方法
 
-1. 修改 `package.json` 和 `package-lock.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.2.0`
+1. 修改 `package.json` 和 `package-lock.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.2.2`
 
-2. 然后先卸载插件，再重新安装插件
+2. 删除 `node_modules`，然后重新 `npm install`
+
+3. 然后先卸载插件，再重新安装插件
 
 ```shell
+
 yapi unplugin --name yapi-plugin-interface-oauth2-token
 
 yapi plugin --name yapi-plugin-interface-oauth2-token
@@ -72,9 +79,9 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 根据不同的环境配置不同的获取token的方式
 
 - 环境名称： 对应环境配置的列表
-- 获取token的地址： 获取 token 的地址，可以是 `GET` 请求或者是 `POST` 请求
-- token有效小时： 我会以定时任务的方式重新获取token
-- 请求头字段： 将获取到的结果放入这个环境的哪个Header字段，比如我这里选择了 `Authorization`，将会把获取道德token保存到这个属性里
+- 获取 `token` 的地址： 获取 token 的地址，可以是 `GET` 请求或者是 `POST` 请求
+- `token` 有效小时： 我会以定时任务的方式重新获取 `token`
+- 请求头字段： 将获取到的结果放入这个环境的哪个 `Header` 字段，比如我这里选择了 `Authorization`，将会把获取到的 `token` 保存到这个属性里
 - 获取路径
   - 比如你要获取请求体里面的内容，就是 `data.xxx`，记得以 `data` 开头获取请求体内容
   - 如果是获取 `header` 的内容请使用 `header.yyy`，可以使用 `+` 作为连接符
@@ -102,7 +109,7 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 ## 重启服务
 
-不论你使用什么启动的YApi，你需要重新启动下
+不论你使用什么启动的 `YApi`，你需要重新启动下
 
 ## 安装失败问题解决
 
@@ -118,7 +125,7 @@ yapi unplugin --name yapi-plugin-interface-oauth2-token
 npm install node-sass
 ```
 
-修改 `package.json` 和 `package-lock.json` 的版本号，再重新安装插件
+修改 `package.json` 和 `package-lock.json` 的版本号，再重新安装插件，目前最新版本为 `1.2.2`
 
 ```shell
 yapi plugin --name yapi-plugin-interface-oauth2-token
