@@ -88,13 +88,18 @@ class syncTokenUtils {
         tokenPathList.forEach(item => {
           token = token[item];
         });
-        token.forEach((item, index) => {
-          if (index === token.length - 1) {
-            accessToken += item.split(';')[0];
-          } else {
-            accessToken += item.split(';')[0] + '; ';
-          }
-        });
+        if (typeof token == 'object') {
+          token.forEach((item, index) => {
+            if (index === token.length - 1) {
+              accessToken += item.split(';')[0];
+            } else {
+              accessToken += item.split(';')[0] + '; ';
+            }
+          });
+        } else {
+          accessToken += token; 
+        }
+        
       } else {
         let tokenPath = path.replace(/'/g, '').replace(/"/g, '');
         accessToken += tokenPath;

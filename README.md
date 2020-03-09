@@ -14,6 +14,10 @@
 
 ## 版本说明
 
+### 1.2.3(2020-3-9)
+
+- 修复获取路径中获取 `header` 简单字符串属性的错误
+
 ### 1.2.2(2020-3-8)
 
 - 完善鉴权页面的配置，解决时长校验规则问题
@@ -56,7 +60,7 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 我的升级过程不一定是最好的方法
 
-1. 修改 `package.json` 和 `package-lock.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.2.2`
+1. 修改 `package.json` 和 `package-lock.json` 中的 `yapi-plugin-interface-oauth2-token` 的版本号为 `1.2.3`
 
 2. 删除 `node_modules`，然后重新 `npm install`
 
@@ -125,7 +129,7 @@ yapi unplugin --name yapi-plugin-interface-oauth2-token
 npm install node-sass
 ```
 
-修改 `package.json` 和 `package-lock.json` 的版本号，再重新安装插件，目前最新版本为 `1.2.2`
+修改 `package.json` 和 `package-lock.json` 的版本号，再重新安装插件，目前最新版本为 `1.2.3`
 
 ```shell
 yapi plugin --name yapi-plugin-interface-oauth2-token
