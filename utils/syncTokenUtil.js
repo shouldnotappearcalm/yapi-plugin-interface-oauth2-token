@@ -149,11 +149,11 @@ class syncTokenUtils {
       let accessToken = this.getTokenByPath(result, oauthData.token_path);
       //更新到对应的env上;
       await this.updateProjectToken(accessToken, oauthData, projectData);
-      this.saveSyncLog(0, '更新token成功', '1', projectId);
-      yapi.commons.log('更新token成功');
+      this.saveSyncLog(0, '环境：【' + oauthData.env_name + '】更新新的token【' + accessToken + '】成功', '1', projectId);
+      yapi.commons.log('环境：【' + oauthData.env_name + '】更新token成功');
     } catch (e) {
-      this.saveSyncLog(-1, '数据格式出错，请检查', '1', projectId);
-      yapi.commons.log('获取数据失败' + e.message);
+      this.saveSyncLog(-1, '环境：【' + oauthData.env_name + '】数据格式出错，请检查', '1', projectId);
+      yapi.commons.log('环境：【' + oauthData.env_name + '】获取数据失败' + e.message);
     }
   }
 
@@ -165,7 +165,7 @@ class syncTokenUtils {
    */
   async updateProjectToken(accessToken, oauthData, projectData) {
     for (let i = 0; i < projectData.env.length; i++) {
-      if (projectData.env[i]._id == oauthData.env_id) {
+      if (projectData.env[i]._id == oauthData.env_id || projectData.env[i]._id.toString() == oauthData.env_id.toString()) {
         let newItem = {
           name: oauthData.token_header,
           value: accessToken
