@@ -74,8 +74,8 @@ class syncTokenUtils {
     paths.forEach(path => {
       let token = result;
       path = path.trim();
-      let tokenPath = path.replace('[', '.');
-      tokenPath = tokenPath.replace(']', '');
+      let tokenPath = path.replace(/\[/g, '.');
+      tokenPath = tokenPath.replace(/\]/g, '');
       let tokenPathList = tokenPath.split('.');
       if (tokenPathList[0] === 'body') {
         tokenPathList[0] = 'data';
