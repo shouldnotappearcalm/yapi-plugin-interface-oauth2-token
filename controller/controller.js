@@ -1,4 +1,5 @@
 const yapi = require('yapi.js');
+const https = require('https');
 const baseController = require('controllers/base.js');
 const oauthModel = require('../model/oauthModel.js');
 const syncTokenUtils = require('../utils/syncTokenUtil.js');
@@ -127,12 +128,21 @@ class interfaceOauth2Controller extends baseController {
     try {
       let result;
       if (type === 'GET') {
-        result = await axios.get(getTokenUrl, { params: params, headers: headersData });
+        result = await axios.get(getTokenUrl, {
+          params: params,
+          headers: headersData,
+          httpsAgent: new https.Agent({
+            rejectUnauthorized: false
+          })
+        });
       } else {
         if (dataType === 'data_json') {
           headersData['Content-Type'] = 'application/json';
           const instance = axios.create({
-            headers: headersData
+            headers: headersData,
+            httpsAgent: new https.Agent({
+              rejectUnauthorized: false
+            })
           });
           result = await instance.post(
             getTokenUrl,
@@ -140,7 +150,12 @@ class interfaceOauth2Controller extends baseController {
           );
         } else {
           headersData['Content-Type'] = 'application/x-www-form-urlencoded';
-          result = await axios.post(getTokenUrl, formData.join('&'), {headers: headersData});
+          result = await axios.post(getTokenUrl, formData.join('&'), {
+            headers: headersData,
+            httpsAgent: new https.Agent({
+              rejectUnauthorized: false
+            })
+          });
         }
       }
       ctx.body = yapi.commons.resReturn(result.data);

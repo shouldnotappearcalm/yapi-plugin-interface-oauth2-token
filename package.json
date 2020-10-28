@@ -1,6 +1,6 @@
 {
   "name": "yapi-plugin-interface-oauth2-token",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "为了解决yapi每个接口都需要鉴权的问题",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "add": "^2.0.6",
     "axios": "^0.19.0",
     "global": "^4.4.0",
+    "https": "^1.0.0",
     "yarn": "^1.22.0",
     "ykit": "^0.8.13"
   }

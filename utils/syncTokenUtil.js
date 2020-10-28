@@ -2,6 +2,7 @@ const schedule = require('node-schedule');
 const projectModel = require('models/project.js');
 const oauthModel = require('../model/oauthModel.js');
 const yapi = require('yapi.js');
+const https = require('https');
 const jobMap = new Map();
 
 class syncTokenUtils {
@@ -295,13 +296,19 @@ class syncTokenUtils {
         });
         response = await axios.get(getTokenUrl, {
           params: params,
-          headers: headersData
+          headers: headersData,
+          httpsAgent: new https.Agent({
+            rejectUnauthorized: false
+          })
         });
       } else {
         if (dataType === 'data_json') {
           headersData['Content-Type'] = 'application/json';
           const instance = axios.create({
-            headers: headersData
+            headers: headersData,
+            httpsAgent: new https.Agent({
+              rejectUnauthorized: false
+            })
           });
           response = await instance.post(getTokenUrl, dataJson);
         } else {
@@ -312,7 +319,13 @@ class syncTokenUtils {
             }
           });
           headersData['Content-Type'] = 'application/x-www-form-urlencoded';
-          response = await axios.post(getTokenUrl, formData.join('&'), {headers: headersData});
+          response = await axios.post(getTokenUrl, formData.join('&'),
+          { 
+            headers: headersData,
+            httpsAgent: new https.Agent({
+              rejectUnauthorized: false
+            })
+          });
         }
       }
       if (response.status > 400) {
