@@ -79,9 +79,23 @@ yapi plugin --name yapi-plugin-interface-oauth2-token
 
 ```
 
-### 安装中如果各种报错
+### 安装插件如果报错
 
-如果安装中报错可以使用我提供的 `node_modules.tar.gz`，下载下来解压到你的 yapi 的 `node_modules` 目录，这个压缩包针对 Linux,Node 13+
+如果安装中报错可以使用我提供的 `node_modules.tar.gz`，下载下来解压到你的 yapi 的 `node_modules` 目录，这个压缩包针对 Linux 和 Node 13 版本
+
+```shell
+
+tar -zvxf node_modules.tar.gz
+
+#记得把 ./yapi 替换成你真正的目录，必须使用 /bin/cp，不然 -f 参数不会生效
+/bin/cp -rf node_modules ./yapi/vendors/
+
+# 执行完成之后在 vendors 执行如下命令
+ykit pack -m
+
+# 现在就可以使用命令启动了
+node server/app.js
+```
 
 ### 配置使用
 
