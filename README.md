@@ -14,7 +14,7 @@
 
 ## 版本说明
 
-### 1.2.4(2020-10-29)
+### 1.3.0(2020-10-29)
 
 - 修复获取路径中解析返回结果中多维数组的问题
 - 支持 http url 使用自签名证书
@@ -78,6 +78,10 @@ yapi unplugin --name yapi-plugin-interface-oauth2-token
 yapi plugin --name yapi-plugin-interface-oauth2-token
 
 ```
+
+### 安装中如果各种报错
+
+如果安装中报错可以使用我提供的 `node_modules.tar.gz`，下载下来解压到你的 yapi 的 `node_modules` 目录，这个压缩包针对 Linux,Node 13+
 
 ### 配置使用
 
