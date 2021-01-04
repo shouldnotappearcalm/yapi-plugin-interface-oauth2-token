@@ -1,9 +1,12 @@
 const schedule = require('node-schedule');
+var AsyncLock = require('async-lock');
 const projectModel = require('models/project.js');
 const oauthModel = require('../model/oauthModel.js');
 const yapi = require('yapi.js');
 const https = require('https');
 const jobMap = new Map();
+
+var lock = new AsyncLock({timeout: 5000});
 
 class syncTokenUtils {
   constructor(ctx) {
@@ -118,44 +121,50 @@ class syncTokenUtils {
       'token更新定时器触发, getTokenUrl:' + oauthData.get_token_url
     );
     //对定时任务存在的必要性做判断
-    let projectData;
-    try {
-      projectData = await this.preRefresh(oauthData);
-    } catch (e) {
-      return;
-    }
-
-    let projectId = projectData._id;
-    let getTokenUrl = oauthData.get_token_url;
-    let method = oauthData.request_type;
-    let headers_data = oauthData.headers_data;
-    let result;
-    try {
-      if (method === 'GET') {
-        let params = oauthData.params;
-        result = await this.execGetToken(getTokenUrl, method, headers_data, params);
-      } else {
-        let dataType = oauthData.dataType;
-        let formData = oauthData.form_data;
-        let dataJson = oauthData.data_json;
-        result = await this.execGetToken(
-          getTokenUrl,
-          method,
-          headers_data,
-          formData,
-          dataJson,
-          dataType
-        );
+    lock.acquire(oauthData.project_id, async function(done) {
+      let projectData;
+      try {
+        projectData = await this.preRefresh(oauthData);
+      } catch (e) {
+        return;
       }
-      let accessToken = this.getTokenByPath(result, oauthData.token_path);
-      //更新到对应的env上;
-      await this.updateProjectToken(accessToken, oauthData, projectData);
-      this.saveSyncLog(0, '环境：【' + oauthData.env_name + '】更新新的token【' + accessToken + '】成功', '1', projectId);
-      yapi.commons.log('环境：【' + oauthData.env_name + '】更新token成功');
-    } catch (e) {
-      this.saveSyncLog(-1, '环境：【' + oauthData.env_name + '】数据格式出错，请检查', '1', projectId);
-      yapi.commons.log('环境：【' + oauthData.env_name + '】获取数据失败' + e.message);
-    }
+
+      let projectId = projectData._id;
+      let getTokenUrl = oauthData.get_token_url;
+      let method = oauthData.request_type;
+      let headers_data = oauthData.headers_data;
+      let result;
+      try {
+        if (method === 'GET') {
+          let params = oauthData.params;
+          result = await this.execGetToken(getTokenUrl, method, headers_data, params);
+        } else {
+          let dataType = oauthData.dataType;
+          let formData = oauthData.form_data;
+          let dataJson = oauthData.data_json;
+          result = await this.execGetToken(
+            getTokenUrl,
+            method,
+            headers_data,
+            formData,
+            dataJson,
+            dataType
+          );
+        }
+        let accessToken = this.getTokenByPath(result, oauthData.token_path);
+        //更新到对应的env上;
+        await this.updateProjectToken(accessToken, oauthData, projectData);
+        this.saveSyncLog(0, '环境：【' + oauthData.env_name + '】更新新的token【' + accessToken + '】成功', '1', projectId);
+        yapi.commons.log('环境：【' + oauthData.env_name + '】更新token成功');
+        done();
+      } catch (e) {
+        this.saveSyncLog(-1, '环境：【' + oauthData.env_name + '】数据格式出错，请检查', '1', projectId);
+        yapi.commons.log('环境：【' + oauthData.env_name + '】获取数据失败' + e.message);
+        done();
+      }
+    }, function(err, ret) {
+      yapi.commons.log('更新 token 失败，' + err.message);
+    }, {});
   }
 
   /**
