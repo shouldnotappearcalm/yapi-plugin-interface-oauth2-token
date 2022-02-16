@@ -219,7 +219,7 @@ class OAuth2Content extends Component {
     }
     try {
       let res = await axios.post('/api/plugin/oauthInterface/url/valid', {
-        url: get_token_url,
+        url: this.props.envMsg.domain + get_token_url,
         method: request_type,
         headers_data: headers_data,
         dataType,
