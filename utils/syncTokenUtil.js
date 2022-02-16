@@ -126,7 +126,7 @@ class syncTokenUtils {
     }
 
     let projectId = projectData._id;
-    let getTokenUrl = oauthData.get_token_url;
+    let getTokenUrl = oauthData.domain + oauthData.get_token_url;
     let method = oauthData.request_type;
     let headers_data = oauthData.headers_data;
     let result;
