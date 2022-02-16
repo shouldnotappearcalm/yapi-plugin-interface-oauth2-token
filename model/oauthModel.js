@@ -22,6 +22,8 @@ class oauthModel extends baseModel {
       env_id: String,
       //环境变量的名称
       env_name: String,
+      // 环境变量的域
+      domain: String
       //保存到哪个header上
       token_header: String,
       //上次成功同步接口时间,
