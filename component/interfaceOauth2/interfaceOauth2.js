@@ -67,14 +67,14 @@ class ProjectInterfaceOauth extends Component {
   }
 
   handleClick = (key, data) => {
-    this.setCurOauth(data._id);
+    this.setCurOauth(data._id, data.domain);
     this.setState({
       currentEnvMsg: data,
       currentKey: key
     });
   };
 
-  setCurOauth(envId) {
+  setCurOauth(envId, envDomain) {
     let currOauth = {};
     if (!this.state.projectAllOauth) {
       this.setState({
@@ -89,6 +89,7 @@ class ProjectInterfaceOauth extends Component {
         this.state.projectAllOauth[i].env_id == envId
       ) {
         currOauth = this.state.projectAllOauth[i];
+        currOauth.domain = envDomain;
         break;
       }
     }
